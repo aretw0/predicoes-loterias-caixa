@@ -113,3 +113,6 @@ dmypy.json
 
 # Logs
 logs/
+
+# Binaries
+bin/
