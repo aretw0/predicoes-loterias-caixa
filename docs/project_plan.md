@@ -12,6 +12,10 @@ Estudar e experimentar modelos matemáticos e estatísticos para análise e pred
 4.  **Modelagem Preditiva:** Experimentar diferentes modelos (estatísticos, de machine learning, etc.) para identificar padrões e tendências.
 5.  **Visualização de Dados:** Criar visualizações que facilitem a compreensão dos dados e dos resultados dos modelos.
 
+## Filosofia de Predição
+
+O projeto reconhece a natureza aleatória dos sorteios de loteria. A nossa abordagem não se baseia na premissa de que é possível prever os resultados com certeza. Em vez disso, o objetivo é "surfar na distribuição natural" dos números sorteados. A estratégia consiste em focar nos números que têm aparecido com menos frequência, partindo do princípio de que, ao longo do tempo, a distribuição dos números tende a se equilibrar. Embora a existência de tendências seja improvável em um sistema verdadeiramente aleatório, o projeto irá monitorar os dados em busca de padrões como parte do processo de análise exploratória.
+
 ## Plano Preliminar
 
 -   [x] Inicializar o repositório Git.
