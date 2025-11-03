@@ -1,6 +1,7 @@
 {
-    "recommendations": [
-        "ms-ceintl.vscode-language-pack-pt-br",
-        "ms-python.python"
-    ]
+  "recommendations": [
+    "ms-ceintl.vscode-language-pack-pt-br",
+    "ms-python.python",
+    "mechatroner.rainbow-csv"
+  ]
 }
