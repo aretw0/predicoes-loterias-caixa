@@ -1,0 +1,12 @@
+version: '3'
+
+tasks:
+  convert:
+    desc: "Converte um arquivo XLSX para CSV."
+    cmds:
+      - docker-compose run --build --rm app python scripts/convert_xlsx_to_csv.py {{.XLSX_FILE}} {{.CSV_FILE}}
+
+  update-megasena:
+    desc: "Atualiza os resultados da Mega-Sena."
+    cmds:
+      - docker-compose run --rm app python scripts/update_megasena.py
