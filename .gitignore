@@ -3,3 +3,4 @@ megasena_statistics.txt
 quina_statistics.txt
 logs/
 bin/
+__pycache__/

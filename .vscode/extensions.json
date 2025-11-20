@@ -2,6 +2,7 @@
   "recommendations": [
     "ms-ceintl.vscode-language-pack-pt-br",
     "ms-python.python",
-    "mechatroner.rainbow-csv"
+    "mechatroner.rainbow-csv",
+    "davidanson.vscode-markdownlint"
   ]
 }
