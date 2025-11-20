@@ -13,8 +13,9 @@ class RandomModel(Model):
         # Random model doesn't need training
         pass
 
-    def predict(self, **kwargs) -> list:
-        return sorted(random.sample(range(self.range_min, self.range_max + 1), self.draw_count))
+    def predict(self, count: int = None, **kwargs) -> list:
+        final_count = count if count is not None else self.draw_count
+        return sorted(random.sample(range(self.range_min, self.range_max + 1), final_count))
 
 class FrequencyModel(Model):
     def __init__(self, range_min: int, range_max: int, draw_count: int):
@@ -36,15 +37,17 @@ class FrequencyModel(Model):
         # Normalize to get probabilities (weights)
         self.weights = frequency / frequency.sum()
 
-    def predict(self, **kwargs) -> list:
+    def predict(self, count: int = None, **kwargs) -> list:
         if self.weights is None:
             raise ValueError("Model has not been trained yet.")
             
+        final_count = count if count is not None else self.draw_count
+        
         # Select numbers based on frequency weights
         # We use random.choices which allows replacement, but lottery numbers must be unique.
         # So we might need to sample more and take unique ones, or use numpy.random.choice with replace=False
         # Since we want to avoid numpy dependency if possible for simple logic, let's use a weighted sample approach.
         
         # A simple approach using pandas sample
-        prediction = self.weights.sample(n=self.draw_count, weights=self.weights, replace=False).index.tolist()
+        prediction = self.weights.sample(n=final_count, weights=self.weights, replace=False).index.tolist()
         return sorted(prediction)
