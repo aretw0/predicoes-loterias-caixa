@@ -59,6 +59,12 @@ def run_predict(args):
         print(f"Error: Minimum numbers for {args.game} is {default_draw_count}.")
         sys.exit(1)
 
+    # Enforce count = split logic for group bets
+    if args.split > 1:
+        if args.count != 1 and args.count != args.split:
+            print(f"Note: Overriding count ({args.count}) to match split ({args.split}) for group bet.")
+        args.count = args.split
+
     # Initialize Model
     if args.model == 'random':
         model = RandomModel(range_min, range_max, default_draw_count)
