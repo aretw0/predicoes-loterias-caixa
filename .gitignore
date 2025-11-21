@@ -5,3 +5,4 @@ logs/
 bin/
 __pycache__/
 predictions.json
+ledger.csv
