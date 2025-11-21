@@ -8,9 +8,9 @@ A Mega-Sena é uma das loterias mais populares do Brasil, conhecida por seus gra
 
 ### 1.1. Características Principais
 
-*   **Números a serem sorteados:** 6 dezenas.
-*   **Universo de números:** De 1 a 60.
-*   **Formato dos dados:** Os dados históricos incluem o número do concurso, data do sorteio, dezenas sorteadas (em ordem de sorteio e crescente), informações sobre premiações (faixas, ganhadores, valor do prêmio), se acumulou, e dados do próximo concurso.
+* **Números a serem sorteados:** 6 dezenas.
+* **Universo de números:** De 1 a 60.
+* **Formato dos dados:** Os dados históricos incluem o número do concurso, data do sorteio, dezenas sorteadas (em ordem de sorteio e crescente), informações sobre premiações (faixas, ganhadores, valor do prêmio), se acumulou, e dados do próximo concurso.
 
 ### 1.2. Estrutura do Jogo
 
@@ -22,9 +22,9 @@ A Quina é conhecida por seus sorteios diários e pela possibilidade de ganhar c
 
 ### 2.1. Características Principais
 
-*   **Números a serem sorteados:** 5 dezenas.
-*   **Universo de números:** De 1 a 80.
-*   **Formato dos dados:** Os dados históricos incluem número do concurso, data, dezenas sorteadas, premiações (Duque, Terno, Quadra, Quina), acumulação e próximo concurso.
+* **Números a serem sorteados:** 5 dezenas.
+* **Universo de números:** De 1 a 80.
+* **Formato dos dados:** Os dados históricos incluem número do concurso, data, dezenas sorteadas, premiações (Duque, Terno, Quadra, Quina), acumulação e próximo concurso.
 
 ### 2.2. Estrutura do Jogo
 
@@ -36,9 +36,9 @@ A Lotofácil, como o próprio nome sugere, é uma loteria com maior probabilidad
 
 ### 3.1. Características Principais
 
-*   **Números a serem sorteados:** 15 dezenas.
-*   **Universo de números:** De 1 a 25.
-*   **Formato dos dados:** Similar à Mega-Sena, os dados históricos da Lotofácil contêm o número do concurso, data, dezenas sorteadas, detalhes das premiações, acumulação e informações do próximo sorteio.
+* **Números a serem sorteados:** 15 dezenas.
+* **Universo de números:** De 1 a 25.
+* **Formato dos dados:** Similar à Mega-Sena, os dados históricos da Lotofácil contêm o número do concurso, data, dezenas sorteadas, detalhes das premiações, acumulação e informações do próximo sorteio.
 
 ### 3.2. Estrutura do Jogo
 
@@ -50,9 +50,9 @@ A Mais Milionária é uma modalidade de loteria mais recente, que oferece prêmi
 
 ### 4.1. Características Principais
 
-*   **Números a serem sorteados:** 6 dezenas e 2 trevos.
-*   **Universo de números:** 6 dezenas de 1 a 50, e 2 trevos de 1 a 6.
-*   **Formato dos dados:** Os dados históricos incluem o número do concurso, data, dezenas sorteadas, trevos sorteados, informações de premiação, acumulação e detalhes do próximo concurso.
+* **Números a serem sorteados:** 6 dezenas e 2 trevos.
+* **Universo de números:** 6 dezenas de 1 a 50, e 2 trevos de 1 a 6.
+* **Formato dos dados:** Os dados históricos incluem o número do concurso, data, dezenas sorteadas, trevos sorteados, informações de premiação, acumulação e detalhes do próximo concurso.
 
 ### 4.2. Estrutura do Jogo
 
@@ -61,4 +61,3 @@ Na Mais Milionária, o apostador escolhe 6 números de 1 a 50 e 2 trevos de 1 a 
 ## Considerações para Modelagem Preditiva
 
 As diferenças nas características de cada loteria (universo de números, quantidade de dezenas sorteadas, e a inclusão de "trevos" na Mais Milionária) exigem abordagens de modelagem distintas. Modelos desenvolvidos para a Mega-Sena, por exemplo, não podem ser diretamente aplicados à Lotofácil ou à Mais Milionária sem adaptações significativas. A análise da distribuição de frequência, a identificação de padrões e a aplicação de algoritmos de aprendizado de máquina devem levar em conta essas especificidades para cada modalidade.
-
