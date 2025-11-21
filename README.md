@@ -27,17 +27,65 @@ Os dados históricos das loterias são obtidos do repositório público [loteria
 
 ## Como Utilizar
 
-Para explorar este repositório:
+### Configuração do Ambiente
 
-1. **Clonar o Repositório:** Faça o download de todos os arquivos para sua máquina local.
-2. **Construir a Imagem Docker:** `docker build -t predicoes-loterias .`
-3. **Executar Análises:** Execute os scripts de análise dentro de um contêiner Docker. Por exemplo, para a Quina:
+Este projeto foi desenhado para ser executado em **DevContainers** (recomendado) ou em um ambiente Python local.
+
+#### Opção A: DevContainers (Recomendado)
+
+1. Abra este repositório no VS Code.
+2. Quando solicitado, clique em "Reopen in Container".
+3. O ambiente será configurado automaticamente com todas as dependências.
+
+#### Opção B: Python Local
+
+1. Certifique-se de ter Python 3.10+ instalado.
+2. Crie um ambiente virtual: `python -m venv .venv`
+3. Ative o ambiente:
+    * Linux/Mac: `source .venv/bin/activate`
+    * Windows: `.venv\Scripts\activate`
+4. Instale as dependências: `pip install -r requirements.txt`
+
+### Executando Predições (CLI)
+
+O projeto possui uma CLI unificada para gerar predições e registrar no Ledger.
+
+**Sintaxe Básica:**
+
+```bash
+python src/cli.py predict --game [megasena|lotofacil|quina] --model [frequency|random] --numbers [QTD] [OPCOES]
+```
+
+**Exemplos:**
+
+1. **Predição Padrão (Números mais frequentes):**
+    Gera uma aposta com 6 números para a Mega-Sena baseada na frequência histórica.
 
     ```bash
-    docker run --rm -v "%cd%:/app" predicoes-loterias python scripts/analyze_quina.py
+    python src/cli.py predict --game megasena --model frequency --numbers 6
     ```
 
-    Substitua `analyze_quina.py` pelo script desejado.
+2. **Estratégia Inversa (Números menos frequentes):**
+    Usa o argumento `--model-args` para inverter a lógica do modelo de frequência.
+
+    ```bash
+    python src/cli.py predict --game megasena --model frequency --numbers 6 --model-args order:asc
+    ```
+
+3. **Salvar no Ledger:**
+    Adicione `--save` e o número do concurso `--contest` para registrar a aposta.
+
+    ```bash
+    python src/cli.py predict --game lotofacil --model frequency --numbers 15 --save --contest 3000
+    ```
+
+### Executando Análises Estatísticas
+
+Os scripts de análise estatística continuam disponíveis:
+
+```bash
+python scripts/analyze_megasena.py
+```
 
 ## Próximos Passos
 
