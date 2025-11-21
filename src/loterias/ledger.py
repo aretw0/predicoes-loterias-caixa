@@ -1,12 +1,14 @@
 import csv
 import os
 import datetime
+import json
+import uuid
 from typing import List, Dict, Any
 
 class Ledger:
     def __init__(self, filename: str = "ledger.csv"):
         self.filename = filename
-        self.headers = ["id", "date", "game", "contest", "numbers", "model", "cost", "status", "prize"]
+        self.headers = ["id", "date", "game", "contest", "numbers", "model", "cost", "status", "prize", "parameters"]
         self._ensure_file_exists()
 
     def _ensure_file_exists(self):
@@ -15,15 +17,16 @@ class Ledger:
                 writer = csv.writer(f)
                 writer.writerow(self.headers)
 
-    def add_bet(self, game: str, model: str, numbers: List[int], contest: int, cost: float):
+    def add_bet(self, game: str, model: str, numbers: List[int], contest: int, cost: float, parameters: Dict[str, Any] = None):
         """Records a new bet."""
         bet_id = self._generate_id()
         date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         numbers_str = " ".join(map(str, numbers))
+        params_str = json.dumps(parameters) if parameters else "{}"
         
         with open(self.filename, 'a', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow([bet_id, date, game, contest, numbers_str, model, cost, "PENDING", 0.0])
+            writer.writerow([bet_id, date, game, contest, numbers_str, model, cost, "PENDING", 0.0, params_str])
         
         print(f"Bet recorded with ID: {bet_id}")
 
@@ -63,5 +66,4 @@ class Ledger:
                 writer.writerows(rows)
 
     def _generate_id(self) -> str:
-        import uuid
         return str(uuid.uuid4())[:8]

@@ -42,12 +42,17 @@ class FrequencyModel(Model):
             raise ValueError("Model has not been trained yet.")
             
         final_count = count if count is not None else self.draw_count
+        order = kwargs.get('order', 'desc')
         
-        # Select numbers based on frequency weights
-        # We use random.choices which allows replacement, but lottery numbers must be unique.
-        # So we might need to sample more and take unique ones, or use numpy.random.choice with replace=False
-        # Since we want to avoid numpy dependency if possible for simple logic, let's use a weighted sample approach.
-        
-        # A simple approach using pandas sample
-        prediction = self.weights.sample(n=final_count, weights=self.weights, replace=False).index.tolist()
+        if order == 'asc':
+            # Least frequent numbers
+            # We can invert the weights or just sort by frequency ascending
+            sorted_freq = self.weights.sort_values(ascending=True)
+            # Take the top 'final_count' from the sorted list
+            prediction = sorted_freq.head(final_count).index.tolist()
+        else:
+            # Most frequent numbers (descending)
+            sorted_freq = self.weights.sort_values(ascending=False)
+            prediction = sorted_freq.head(final_count).index.tolist()
+            
         return sorted(prediction)
