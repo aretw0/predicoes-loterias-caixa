@@ -8,6 +8,19 @@ from src.loterias.utils import export_to_json, export_to_csv
 from src.loterias.ledger import Ledger
 from src.loterias.checker import Checker
 
+def parse_model_args(args_list):
+    """Parses a list of strings in 'key:value' format into a dictionary."""
+    if not args_list:
+        return {}
+    model_args = {}
+    for arg in args_list:
+        if ':' in arg:
+            key, value = arg.split(':', 1)
+            model_args[key] = value
+        else:
+            print(f"Warning: Invalid model arg format '{arg}'. Expected 'key:value'. Ignoring.")
+    return model_args
+
 def main():
     parser = argparse.ArgumentParser(description="Lottery Prediction Engine CLI")
     subparsers = parser.add_subparsers(dest='command', help='Command to run')
@@ -16,12 +29,11 @@ def main():
     predict_parser = subparsers.add_parser('predict', help='Generate predictions')
     predict_parser.add_argument('--game', type=str, required=True, choices=['megasena', 'lotofacil', 'quina'], help="The lottery game to predict for.")
     predict_parser.add_argument('--model', type=str, required=True, choices=['random', 'frequency'], help="The prediction model to use.")
-    predict_parser.add_argument('--count', type=int, default=1, help="Number of predictions to generate.")
     predict_parser.add_argument('--numbers', type=int, help="Quantity of numbers to play (e.g., 6, 7, 15). Defaults to minimum for the game.")
     predict_parser.add_argument('--output', type=str, help="Output file for predictions (e.g., predictions.json or predictions.csv).")
     predict_parser.add_argument('--save', action='store_true', help="Save predictions to the Ledger.")
     predict_parser.add_argument('--contest', type=int, help="Target contest number (required if saving).")
-    predict_parser.add_argument('--split', type=int, default=1, help="Number of people to split the cost with.")
+    predict_parser.add_argument('--model-args', nargs='*', help="Model arguments in key:value format (e.g., order:asc).")
 
     # Check Command
     check_parser = subparsers.add_parser('check', help='Check pending bets in the Ledger')
@@ -54,16 +66,12 @@ def run_predict(args):
     quantity = args.numbers if args.numbers else default_draw_count
     
     # Validate quantity
-    # Simple validation, could be more robust based on game rules
     if quantity < default_draw_count:
         print(f"Error: Minimum numbers for {args.game} is {default_draw_count}.")
         sys.exit(1)
 
-    # Enforce count = split logic for group bets
-    if args.split > 1:
-        if args.count != 1 and args.count != args.split:
-            print(f"Note: Overriding count ({args.count}) to match split ({args.split}) for group bet.")
-        args.count = args.split
+    # Parse model args
+    model_args = parse_model_args(args.model_args)
 
     # Initialize Model
     if args.model == 'random':
@@ -83,21 +91,15 @@ def run_predict(args):
     if price_per_bet == 0.0:
         print(f"Warning: Could not find price for {quantity} numbers in {args.game}. Assuming 0.00.")
     
-    total_cost = price_per_bet * args.count
-    cost_per_person = total_cost / args.split
-
     print(f"\n--- Cost Analysis ---")
     print(f"Game: {lottery.name}")
     print(f"Numbers per bet: {quantity}")
     print(f"Price per bet: R$ {price_per_bet:.2f}")
-    print(f"Total Cost ({args.count} bets): R$ {total_cost:.2f}")
-    if args.split > 1:
-        print(f"Split among {args.split} people: R$ {cost_per_person:.2f} per person")
+    print(f"Model Args: {model_args}")
     print(f"---------------------\n")
 
-    # Generate Predictions
-    predictions = []
-    print(f"Generating {args.count} predictions using {model.name} for {lottery.name}...")
+    # Generate Prediction
+    print(f"Generating prediction using {model.name} for {lottery.name}...")
     
     ledger = Ledger() if args.save else None
     
@@ -105,33 +107,31 @@ def run_predict(args):
         print("Error: --contest is required when saving to Ledger.")
         sys.exit(1)
 
-    for i in range(args.count):
-        # Pass quantity to predict method
-        prediction = model.predict(count=quantity)
-        predictions.append({
-            "game": args.game,
-            "model": args.model,
-            "prediction_id": i + 1,
-            "numbers": prediction,
-            "cost": price_per_bet
-        })
-        print(f"Prediction {i+1}: {prediction}")
-        
-        if ledger:
-            ledger.add_bet(args.game, args.model, prediction, args.contest, price_per_bet)
+    # Pass quantity and model_args to predict method
+    prediction = model.predict(count=quantity, **model_args)
+    
+    result = {
+        "game": args.game,
+        "model": args.model,
+        "prediction_id": 1,
+        "numbers": prediction,
+        "cost": price_per_bet,
+        "parameters": model_args
+    }
+    print(f"Prediction: {prediction}")
+    
+    if ledger:
+        ledger.add_bet(args.game, args.model, prediction, args.contest, price_per_bet, parameters=model_args)
 
     # Export
     if args.output:
         if args.output.endswith('.json'):
-            export_to_json(predictions, args.output)
+            export_to_json([result], args.output)
         elif args.output.endswith('.csv'):
             # Convert list of numbers to string for CSV
-            csv_predictions = []
-            for p in predictions:
-                p_copy = p.copy()
-                p_copy['numbers'] = " ".join(map(str, p['numbers']))
-                csv_predictions.append(p_copy)
-            export_to_csv(csv_predictions, args.output)
+            result_copy = result.copy()
+            result_copy['numbers'] = " ".join(map(str, result['numbers']))
+            export_to_csv([result_copy], args.output)
         else:
             print("Unsupported output format. Please use .json or .csv")
 
