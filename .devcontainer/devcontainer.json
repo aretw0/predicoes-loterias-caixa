@@ -22,5 +22,8 @@
 			]
 		}
 	},
+	"remoteEnv": {
+		"PYTHONPATH": "${containerEnv:PYTHONPATH}:/workspaces/predicoes-loterias-caixa"
+	},
 	"remoteUser": "vscode"
 }
