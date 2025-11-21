@@ -53,7 +53,7 @@ O projeto possui uma CLI unificada para gerar predições e registrar no Ledger.
 **Sintaxe Básica:**
 
 ```bash
-python src/cli.py predict --game [megasena|lotofacil|quina] --model [frequency|random] --numbers [QTD] [OPCOES]
+python main.py predict --game [megasena|lotofacil|quina] --model [frequency|random] --numbers [QTD] [OPCOES]
 ```
 
 **Exemplos:**
@@ -62,21 +62,21 @@ python src/cli.py predict --game [megasena|lotofacil|quina] --model [frequency|r
     Gera uma aposta com 6 números para a Mega-Sena baseada na frequência histórica.
 
     ```bash
-    python src/cli.py predict --game megasena --model frequency --numbers 6
+    python main.py predict --game megasena --model frequency --numbers 6
     ```
 
 2. **Estratégia Inversa (Números menos frequentes):**
     Usa o argumento `--model-args` para inverter a lógica do modelo de frequência.
 
     ```bash
-    python src/cli.py predict --game megasena --model frequency --numbers 6 --model-args order:asc
+    python main.py predict --game megasena --model frequency --numbers 6 --model-args order:asc
     ```
 
 3. **Salvar no Ledger:**
     Adicione `--save` e o número do concurso `--contest` para registrar a aposta.
 
     ```bash
-    python src/cli.py predict --game lotofacil --model frequency --numbers 15 --save --contest 3000
+    python main.py predict --game lotofacil --model frequency --numbers 15 --save --contest 3000
     ```
 
 ### Executando Análises Estatísticas
