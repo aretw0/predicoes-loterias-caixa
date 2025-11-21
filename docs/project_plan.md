@@ -29,8 +29,10 @@ A fase de "produção" de um modelo consistirá em utilizar o seu estado treinad
 - [x] Refatorar o projeto para consumir dados de um repositório externo (`loterias-caixa-db`).
 - [x] Realizar uma análise estatística básica dos resultados da Quina, Lotofácil e Mega-Sena.
 - [x] Definir Roadmap de Evolução (ver [docs/roadmap.md](roadmap.md)).
-- [ ] Implementar um modelo de predição inicial para a Quina.
+- [x] Implementar um modelo de predição inicial para a Quina.
+- [x] Expandir a modelagem para Lotofácil e Mega-Sena.
+- [x] Implementar CLI para geração de predições e registro em Ledger.
+- [x] Adicionar testes automatizados para validação do fluxo.
 - [ ] Desenvolver um sistema de backtesting para avaliar a performance do modelo.
-- [ ] Expandir a modelagem para Lotofácil e Mega-Sena.
 - [ ] Criar visualizações para os resultados da análise e dos modelos.
 - [ ] Documentar as descobertas e os resultados dos modelos.
