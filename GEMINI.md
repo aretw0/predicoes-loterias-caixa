@@ -7,7 +7,7 @@
 
 ## Current Status
 
-- **Phase:** Transitioning from **Phase 1 (Foundation)** to **Phase 2 (Prediction Engine)**.
+- **Phase:** **Phase 3 (Hypothetical Tracking System)** Completed. Ready for P&L Reporting.
 - **Environment:** DevContainer (Python).
 - **Data Source:** External repository `loterias-caixa-db` (CSV files).
 - **Architecture:** Object-Oriented (src/loterias), separating Data, Core Logic, and Reporting.
@@ -19,17 +19,16 @@
 - `src/loterias/{game}.py`: Specific implementations (MegaSena, Lotofacil, Quina).
 - `scripts/`: Analysis and execution scripts.
 
-## Immediate Focus (Phase 2)
+## Immediate Focus (Phase 3 - Reporting)
 
-1. **Prediction Engine:** Create a CLI/Interface to generate predictions using different models.
-2. **Initial Models:** Implement basic models (Frequency, Random, etc.) to test the pipeline.
-3. **Export:** Save predictions in a structured format for later verification.
+1. **P&L Reporting:** Create a script to calculate Profit & Loss from `ledger.csv`.
+2. **Automation:** Automate the daily check of results.
 
 ## Roadmap Summary
 
 1. **Phase 1:** Foundation & Refactoring (✅ Complete)
-2. **Phase 2:** Prediction Engine & On-Demand Service (🚧 Next)
-3. **Phase 3:** Hypothetical Tracking System (Ledger & P&L)
+2. **Phase 2:** Prediction Engine & On-Demand Service (✅ Complete)
+3. **Phase 3:** Hypothetical Tracking System (Ledger & Checker) (🚧 In Progress)
 4. **Phase 4:** Advanced Modeling (ML/AI)
 5. **Phase 5:** Visualization & Static Reporting
 
