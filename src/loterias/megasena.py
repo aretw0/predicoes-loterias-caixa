@@ -6,7 +6,8 @@ class MegaSena(Lottery):
     def __init__(self):
         super().__init__(
             name="Mega Sena",
-            data_url="https://raw.githubusercontent.com/aretw0/loterias-caixa-db/refs/heads/main/data/megasena.csv"
+            data_url="https://raw.githubusercontent.com/aretw0/loterias-caixa-db/refs/heads/main/data/megasena.csv",
+            slug="megasena"
         )
 
     def load_data(self) -> pd.DataFrame:

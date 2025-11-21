@@ -6,7 +6,8 @@ class Quina(Lottery):
     def __init__(self):
         super().__init__(
             name="Quina",
-            data_url="https://raw.githubusercontent.com/aretw0/loterias-caixa-db/refs/heads/main/data/quina.csv"
+            data_url="https://raw.githubusercontent.com/aretw0/loterias-caixa-db/refs/heads/main/data/quina.csv",
+            slug="quina"
         )
 
     def load_data(self) -> pd.DataFrame:

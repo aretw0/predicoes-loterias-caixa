@@ -6,7 +6,8 @@ class Lotofacil(Lottery):
     def __init__(self):
         super().__init__(
             name="Lotofácil",
-            data_url="https://raw.githubusercontent.com/aretw0/loterias-caixa-db/refs/heads/main/data/lotofacil.csv"
+            data_url="https://raw.githubusercontent.com/aretw0/loterias-caixa-db/refs/heads/main/data/lotofacil.csv",
+            slug="lotofacil"
         )
 
     def load_data(self) -> pd.DataFrame:
