@@ -16,16 +16,18 @@ We use Semantic Versioning (SemVer).
 * [x] Documentation Restructure
 * [x] Editable Install Support
 
-### v0.2.0 - Analysis & Reporting (Next)
+### v0.2.0 - Model Research & Expansion (Next)
 
-* [ ] Integration with external analysis tools.
-* [ ] Enhanced historical data validation.
-* [ ] "Hypothetical P&L" tracking (revisiting the Ledger concept with a better approach).
-
-### v0.3.0 - Advanced Modeling
-
+* [ ] **Research**: Study statistical distributions (e.g., Law of Large Numbers, Poisson) to identify potential "surfing" strategies.
+* [ ] **New Models**: Implement models based on research (e.g., avoiding unlikely sequences).
+* [ ] **Academic Integrity**: Ensure all new models have a clear mathematical basis, acknowledging the stochastic nature of the game.
+* [ ] Advanced statistical filters.
 * [ ] Machine Learning implementations (if proven viable in analysis).
-* [ ] Advanced statistical filters (e.g., Prime/Composite balance).
+
+### v0.3.0 - Future & Integration
+
+* [ ] "Hypothetical P&L": Tracking theoretical performance over time.
+* [ ] External Tools: Integration with analysis pipelines.
 
 ## Future Ideas
 
