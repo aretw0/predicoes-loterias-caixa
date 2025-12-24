@@ -2,39 +2,51 @@
 
 ## Project Overview
 
-**Predições de Loterias da Caixa** is a project to study and experiment with mathematical and statistical models for analyzing and predicting lottery results (Mega-Sena, Lotofácil, Quina).
-**Goal:** Create a "laboratory" to validate hypothesis, tracking predictions against real results with a focus on hypothetical financial performance.
-
-## Current Status
-
-- **Phase:** **Refactoring for Robustness (CLI & Determinism)**.
-- **Environment:** DevContainer (Python).
-- **Data Source:** External repository `loterias-caixa-db` (CSV files).
-- **Architecture:** Object-Oriented (src/loterias), separating Data, Core Logic, and Reporting.
+**Predições de Loterias da Caixa** is a laboratory for experimenting with mathematical and statistical models for predicting lottery results.
+**Goal:** Validate hypotheses by tracking predictions against real results, focusing on hypothetical financial performance.
 
 ## Architecture
 
-- `src/loterias/base.py`: Base classes `Lottery` and `Model`.
-- `src/loterias/data_manager.py`: Handles data fetching and caching.
-- `src/loterias/{game}.py`: Specific implementations (MegaSena, Lotofacil, Quina).
-- `scripts/`: Analysis and execution scripts.
+- **`src.loterias`**: Core package.
+  - `base.py`: Base classes `Lottery` (Data) and `Model` (Logic).
+  - `data_manager.py`: Handles data fetching/caching from `loterias-caixa-db`.
+  - `models.py`: Implementations (`RandomModel`, `FrequencyModel`).
+- **`src.cli`**: Main entry point (`loto-cli`).
+- **`tests/`**: Unit tests via `pytest`.
 
-## Immediate Focus (Phase 3 - Reporting)
+## Instructions
 
-1. **Robust CLI:** Refactor `src/cli.py` to be a reliable, standard-compliant tool.
-2. **Determinism:** Ensure models (`FrequencyModel`, `RandomModel`) are fully deterministic (explicit sorting, seeding).
-3. **Testing:** Establish a solid testing infrastructure (`pytest`).
+### 1. Installation
 
-## Roadmap Summary
+This project supports editable installation for ease of development:
 
-1. **Phase 1:** Foundation & Refactoring (✅ Complete)
-2. **Phase 2:** Prediction Engine & On-Demand Service (✅ Complete)
-3. **Phase 3:** Hypothetical Tracking System (Ledger & Checker) (🚧 In Progress)
-4. **Phase 4:** Advanced Modeling (ML/AI)
-5. **Phase 5:** Visualization & Static Reporting
+```bash
+pip install -e .
+```
 
-## Key Files
+### 2. Execution
 
-- `docs/roadmap.md`: Long-term vision.
-- `docs/project_plan.md`: Original plan.
-- `src/loterias/`: Core source code.
+Use the CLI tool to generate predictions:
+
+```bash
+loto-cli predict --game megasena --model frequency --numbers 6
+```
+
+Or for reproducibility:
+
+```bash
+loto-cli predict --game megasena --model random --model-args seed:42
+```
+
+### 3. Testing
+
+Run the test suite:
+
+```bash
+pytest
+```
+
+## Documentation
+
+- **Roadmap & Status**: See `docs/roadmap.md`.
+- **Legacy Plans**: See `docs/project_plan.md`.

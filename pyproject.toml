@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "predicoes-loterias-caixa"
+version = "0.1.0"
+description = "Lottery prediction laboratory"
+authors = [
+    {name = "User", email = "user@example.com"},
+]
+dependencies = [
+    "requests",
+    "pandas",
+    "openpyxl",
+    "pytest"
+]
+requires-python = ">=3.8"
+
+[project.scripts]
+loto-cli = "src.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+
+[tool.setuptools]
+packages = ["src", "src.loterias"]
+
