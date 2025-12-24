@@ -8,7 +8,7 @@ PACKAGE_ROOT = CURRENT_FILE.parent  # src/loterias
 SRC_ROOT = PACKAGE_ROOT.parent      # src
 PROJECT_ROOT = SRC_ROOT.parent      # <project_root>
 
-CONFIG_DIR = PROJECT_ROOT / 'config'
+CONFIG_DIR = SRC_ROOT / 'config'
 PRICES_CONFIG_PATH = CONFIG_DIR / 'prices.json'
 
 def get_prices_config() -> dict:
