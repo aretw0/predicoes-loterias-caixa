@@ -18,7 +18,7 @@ dependencies = [
 requires-python = ">=3.8"
 
 [project.scripts]
-loto-cli = "src.cli:main"
+preloto = "src.cli:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

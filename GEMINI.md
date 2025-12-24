@@ -29,13 +29,13 @@ pip install -e .
 Use the CLI tool to generate predictions:
 
 ```bash
-loto-cli predict --game megasena --model frequency --numbers 6
+preloto megasena
 ```
 
 Or for reproducibility:
 
 ```bash
-loto-cli predict --game megasena --model random --model-args seed:42
+preloto megasena --model random --model-args seed:42
 ```
 
 ### 3. Testing
