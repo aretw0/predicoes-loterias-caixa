@@ -7,7 +7,7 @@
 
 ## Current Status
 
-- **Phase:** **Phase 3 (Hypothetical Tracking System)** Completed. Ready for P&L Reporting.
+- **Phase:** **Refactoring for Robustness (CLI & Determinism)**.
 - **Environment:** DevContainer (Python).
 - **Data Source:** External repository `loterias-caixa-db` (CSV files).
 - **Architecture:** Object-Oriented (src/loterias), separating Data, Core Logic, and Reporting.
@@ -21,8 +21,9 @@
 
 ## Immediate Focus (Phase 3 - Reporting)
 
-1. **P&L Reporting:** Create a script to calculate Profit & Loss from `ledger.csv`.
-2. **Automation:** Automate the daily check of results.
+1. **Robust CLI:** Refactor `src/cli.py` to be a reliable, standard-compliant tool.
+2. **Determinism:** Ensure models (`FrequencyModel`, `RandomModel`) are fully deterministic (explicit sorting, seeding).
+3. **Testing:** Establish a solid testing infrastructure (`pytest`).
 
 ## Roadmap Summary
 

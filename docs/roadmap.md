@@ -33,19 +33,20 @@ O objetivo é criar um ecossistema onde modelos preditivos (dos mais simples aos
 - [x] **Exportação de Dados:** Implementar a saída das predições em formatos estáticos padronizados (`.csv`, `.json`) para fácil consumo ou visualização.
   - Exemplo: `predicoes_quina_concurso_6000.csv`
 
-### Fase 3: Sistema de Rastreamento Hipotético (O "Reality Check") (Médio/Longo Prazo)
+### Fase 2.5: Robustez e Determinismo (Foco Atual)
 <!-- Status: In Progress -->
 
-*Objetivo: Automatizar a validação e o controle financeiro simulado.*
+*Objetivo: Garantir que o "laboratório" seja científico e reprodutível.*
 
-- [x] **Registro de Apostas (Ledger):** Criar um sistema (banco de dados simples ou arquivos estruturados) para armazenar as predições geradas *antes* do sorteio ocorrer.
-  - Campos: Data, Concurso Alvo, Modelo Usado, Jogos Gerados, Custo da Aposta.
-- [ ] **Conferência Automática:** Script que roda após a atualização dos resultados oficiais, comparando as apostas registradas com os números sorteados. (Refatoração em andamento)
-- [ ] **Relatório de Performance (P&L):** Geração de relatórios que mostram:
-  - Taxa de Acerto (Geral e por Faixa de Prêmio).
-  - Custo Total Hipotético vs. Prêmios Hipotéticos.
-  - ROI (Retorno sobre Investimento) de cada modelo.
-  - *Meta:* Demonstrar visualmente a dificuldade de bater a aleatoriedade.
+- [ ] **Determinismo:**
+  - `RandomModel`: Adicionar suporte a `seed` para reprodutibilidade total.
+  - `FrequencyModel`: Garantir ordenação determinística (critério de desempate explícito).
+- [ ] **CLI Profissional:**
+  - Defaults inteligentes (e.g., jogar quantidade máxima de números por padrão).
+  - Output limpo e estruturado.
+- [ ] **Engenharia de Testes:**
+  - Setup do `pytest`.
+  - Testes unitários para garantir a lógica dos modelos.
 
 ### Fase 4: Modelagem Avançada (Longo Prazo)
 
