@@ -1,5 +1,6 @@
 import argparse
 import sys
+import json
 from src.loterias.megasena import MegaSena
 from src.loterias.lotofacil import Lotofacil
 from src.loterias.quina import Quina
@@ -48,26 +49,33 @@ def main():
         parser.print_help()
 
 def run_predict(args):
+    # Defaults (Max numbers as requested)
+    defaults = {
+        'megasena': {'min': 1, 'max': 60, 'draw': 6, 'default_play': 20},
+        'lotofacil': {'min': 1, 'max': 25, 'draw': 15, 'default_play': 20},
+        'quina': {'min': 1, 'max': 80, 'draw': 5, 'default_play': 15}
+    }
+
+    if args.game not in defaults:
+        print(f"Error: Game {args.game} not supported.")
+        sys.exit(1)
+
+    game_config = defaults[args.game]
+    
     # Initialize Game
     if args.game == 'megasena':
         lottery = MegaSena()
-        range_min, range_max, default_draw_count = 1, 60, 6
     elif args.game == 'lotofacil':
         lottery = Lotofacil()
-        range_min, range_max, default_draw_count = 1, 25, 15
     elif args.game == 'quina':
         lottery = Quina()
-        range_min, range_max, default_draw_count = 1, 80, 5
-    else:
-        print(f"Game {args.game} not supported.")
-        sys.exit(1)
 
     # Determine quantity of numbers
-    quantity = args.numbers if args.numbers else default_draw_count
+    quantity = args.numbers if args.numbers else game_config['default_play']
     
     # Validate quantity
-    if quantity < default_draw_count:
-        print(f"Error: Minimum numbers for {args.game} is {default_draw_count}.")
+    if quantity < game_config['draw']:
+        print(f"Error: Minimum numbers for {args.game} is {game_config['draw']}.")
         sys.exit(1)
 
     # Parse model args
@@ -75,68 +83,68 @@ def run_predict(args):
 
     # Initialize Model
     if args.model == 'random':
-        model = RandomModel(range_min, range_max, default_draw_count)
+        model = RandomModel(game_config['min'], game_config['max'], game_config['draw'])
     elif args.model == 'frequency':
-        model = FrequencyModel(range_min, range_max, default_draw_count)
-        print(f"Loading data for {lottery.name}...")
+        model = FrequencyModel(game_config['min'], game_config['max'], game_config['draw'])
+        # Train model (suppress output or log to stderr if needed)
+        # print(f"Loading data for {lottery.name}...", file=sys.stderr)
         df = lottery.preprocess_data()
-        print(f"Training {model.name}...")
         model.train(df)
     else:
-        print(f"Model {args.model} not supported.")
+        print(f"Error: Model {args.model} not supported.")
         sys.exit(1)
 
     # Calculate Costs
     price_per_bet = lottery.get_price(quantity)
-    if price_per_bet == 0.0:
-        print(f"Warning: Could not find price for {quantity} numbers in {args.game}. Assuming 0.00.")
     
-    print(f"\n--- Cost Analysis ---")
-    print(f"Game: {lottery.name}")
-    print(f"Numbers per bet: {quantity}")
-    print(f"Price per bet: R$ {price_per_bet:.2f}")
-    print(f"Model Args: {model_args}")
-    print(f"---------------------\n")
-
     # Generate Prediction
-    print(f"Generating prediction using {model.name} for {lottery.name}...")
-    
-    ledger = Ledger() if args.save else None
-    
-    if args.save and not args.contest:
-        print("Error: --contest is required when saving to Ledger.")
-        sys.exit(1)
-
     # Pass quantity and model_args to predict method
+    # Convert 'seed' to int if present in model_args
+    if 'seed' in model_args:
+        try:
+            model_args['seed'] = int(model_args['seed'])
+        except ValueError:
+            print(f"Error: seed must be an integer.", file=sys.stderr)
+            sys.exit(1)
+
     prediction = model.predict(count=quantity, **model_args)
     
     result = {
         "game": args.game,
         "model": args.model,
-        "prediction_id": 1,
         "numbers": prediction,
         "cost": price_per_bet,
         "parameters": model_args
     }
-    print(f"Prediction: {prediction}")
     
-    if ledger:
+    # Main Output (JSON to stdout for easy parsing, or formatted text?)
+    # User requested proper CLI tool. Defaults: human readable to stdout.
+    # If --output is json, write to file.
+    
+    if args.save:
+        if not args.contest:
+             print("Error: --contest is required when saving to Ledger.", file=sys.stderr)
+             sys.exit(1)
+        ledger = Ledger()
         ledger.add_bet(args.game, args.model, prediction, args.contest, price_per_bet, parameters=model_args)
 
-    # Export
+    # Export/Output
     if args.output:
         if args.output.endswith('.json'):
             export_to_json([result], args.output)
         elif args.output.endswith('.csv'):
-            # Convert list of numbers to string for CSV
-            result_copy = result.copy()
-            result_copy['numbers'] = " ".join(map(str, result['numbers']))
-            export_to_csv([result_copy], args.output)
+             result_copy = result.copy()
+             result_copy['numbers'] = " ".join(map(str, result['numbers']))
+             export_to_csv([result_copy], args.output)
         else:
-            print("Unsupported output format. Please use .json or .csv")
+             print("Error: Unsupported output format. Use .json or .csv", file=sys.stderr)
+    
+    # Human readable output to stdout
+    print(json.dumps(result, indent=2))
 
 def run_check(args):
     checker = Checker()
+    # Assuming checker prints to stdout
     checker.check_bets()
 
 if __name__ == "__main__":
