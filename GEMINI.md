@@ -48,5 +48,4 @@ pytest
 
 ## Documentation
 
-- **Roadmap & Status**: See `docs/roadmap.md`.
-- **Legacy Plans**: See `docs/project_plan.md`.
+- **Architecture**: See `src/loterias/`.
