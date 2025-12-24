@@ -9,35 +9,38 @@ O objetivo é criar um ecossistema onde modelos preditivos (dos mais simples aos
 ## Fases do Projeto
 
 ### Fase 1: Reestruturação e Fundação (Curto Prazo)
+<!-- Status: Completed -->
 
 *Objetivo: Organizar o código para suportar múltiplos modelos e automação.*
 
-- [ ] **Modularização do Código:** Refatorar os scripts atuais (`analyze_*.py`) em uma estrutura de pacote Python (ex: `src/loterias`), separando:
+- [x] **Modularização do Código:** Refatorar os scripts atuais (`analyze_*.py`) em uma estrutura de pacote Python (ex: `src/loterias`), separando:
   - Coleta de dados (Data Ingestion).
   - Processamento e Análise (Core Logic).
   - Geração de Relatórios (Reporting).
-- [ ] **Padronização de Interfaces:** Criar classes base para "Loterias" e "Modelos", permitindo que novos jogos ou estratégias sejam plugados facilmente.
-- [ ] **Pipeline de Dados:** Garantir que a atualização dos dados do repositório externo (`loterias-caixa-db`) seja fluida e integrada.
+- [x] **Padronização de Interfaces:** Criar classes base para "Loterias" e "Modelos", permitindo que novos jogos ou estratégias sejam plugados facilmente.
+- [x] **Pipeline de Dados:** Garantir que a atualização dos dados do repositório externo (`loterias-caixa-db`) seja fluida e integrada.
 
 ### Fase 2: Motor de Predição e Serviço "Sob Demanda" (Médio Prazo)
+<!-- Status: Completed -->
 
 *Objetivo: Gerar palpites configuráveis e exportáveis.*
 
-- [ ] **Interface de Geração:** Criar um comando (CLI) que aceite parâmetros como:
+- [x] **Interface de Geração:** Criar um comando (CLI) que aceite parâmetros como:
   - Jogo (Mega, Quina, Lotofácil).
   - Modelo (Estatístico, Frequência, Aleatório, ML).
   - Quantidade de Jogos a gerar.
   - Filtros (ex: evitar sequências, equilibrar pares/ímpares).
-- [ ] **Exportação de Dados:** Implementar a saída das predições em formatos estáticos padronizados (`.csv`, `.json`) para fácil consumo ou visualização.
+- [x] **Exportação de Dados:** Implementar a saída das predições em formatos estáticos padronizados (`.csv`, `.json`) para fácil consumo ou visualização.
   - Exemplo: `predicoes_quina_concurso_6000.csv`
 
 ### Fase 3: Sistema de Rastreamento Hipotético (O "Reality Check") (Médio/Longo Prazo)
+<!-- Status: In Progress -->
 
 *Objetivo: Automatizar a validação e o controle financeiro simulado.*
 
-- [ ] **Registro de Apostas (Ledger):** Criar um sistema (banco de dados simples ou arquivos estruturados) para armazenar as predições geradas *antes* do sorteio ocorrer.
+- [x] **Registro de Apostas (Ledger):** Criar um sistema (banco de dados simples ou arquivos estruturados) para armazenar as predições geradas *antes* do sorteio ocorrer.
   - Campos: Data, Concurso Alvo, Modelo Usado, Jogos Gerados, Custo da Aposta.
-- [ ] **Conferência Automática:** Script que roda após a atualização dos resultados oficiais, comparando as apostas registradas com os números sorteados.
+- [ ] **Conferência Automática:** Script que roda após a atualização dos resultados oficiais, comparando as apostas registradas com os números sorteados. (Refatoração em andamento)
 - [ ] **Relatório de Performance (P&L):** Geração de relatórios que mostram:
   - Taxa de Acerto (Geral e por Faixa de Prêmio).
   - Custo Total Hipotético vs. Prêmios Hipotéticos.

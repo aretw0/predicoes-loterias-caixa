@@ -1,4 +1,7 @@
-# Plano do Projeto: Predições de Loterias da Caixa
+# [DEPRECATED] Plano do Projeto: Predições de Loterias da Caixa
+
+> [!CAUTION]
+> **Arquivo Arquivado**: Este documento é mantido apenas para fins históricos. A fonte da verdade para o roteiro do projeto é o [roadmap.md](../roadmap.md).
 
 ## Visão
 
