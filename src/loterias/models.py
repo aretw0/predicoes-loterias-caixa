@@ -15,7 +15,10 @@ class RandomModel(Model):
 
     def predict(self, count: int = None, **kwargs) -> list:
         final_count = count if count is not None else self.draw_count
-        return sorted(random.sample(range(self.range_min, self.range_max + 1), final_count))
+        seed = kwargs.get('seed')
+        
+        rng = random.Random(seed) if seed is not None else random
+        return sorted(rng.sample(range(self.range_min, self.range_max + 1), final_count))
 
 class FrequencyModel(Model):
     def __init__(self, range_min: int, range_max: int, draw_count: int):
@@ -44,15 +47,18 @@ class FrequencyModel(Model):
         final_count = count if count is not None else self.draw_count
         order = kwargs.get('order', 'desc')
         
+        # Convert Series to DataFrame for multi-column sorting
+        df = self.weights.reset_index(name='weight')
+        
         if order == 'asc':
             # Least frequent numbers
-            # We can invert the weights or just sort by frequency ascending
-            sorted_freq = self.weights.sort_values(ascending=True)
-            # Take the top 'final_count' from the sorted list
-            prediction = sorted_freq.head(final_count).index.tolist()
+            # Sort by weight (asc), then by dezenas (asc) for determinism
+            sorted_df = df.sort_values(by=['weight', 'dezenas'], ascending=[True, True])
         else:
-            # Most frequent numbers (descending)
-            sorted_freq = self.weights.sort_values(ascending=False)
-            prediction = sorted_freq.head(final_count).index.tolist()
+            # Most frequent numbers
+            # Sort by weight (desc), then by dezenas (asc) for determinism
+            sorted_df = df.sort_values(by=['weight', 'dezenas'], ascending=[False, True])
+            
+        prediction = sorted_df.head(final_count)['dezenas'].tolist()
             
         return sorted(prediction)
