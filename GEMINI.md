@@ -1,51 +1,30 @@
-# GEMINI.md - Project Context & Agent Guide
+# GEMINI.md - Agent Context
 
-## Project Overview
+> [!IMPORTANT]
+> This file is for **AI Agents** working on the project. It defines the rules, context, and preferred coding style.
 
-**Predições de Loterias da Caixa** is a laboratory for experimenting with mathematical and statistical models for predicting lottery results.
-**Goal:** Validate hypotheses by tracking predictions against real results, focusing on hypothetical financial performance.
+## Project Identity
+
+* **Name**: Preloto
+* **Core Purpose**: A robust, deterministic CLI for generating lottery predictions.
 
 ## Architecture
 
-- **`src.loterias`**: Core package.
-  - `base.py`: Base classes `Lottery` (Data) and `Model` (Logic).
-  - `data_manager.py`: Handles data fetching/caching from `loterias-caixa-db`.
-  - `models.py`: Implementations (`RandomModel`, `FrequencyModel`).
-- **`src.cli`**: Main entry point (`loto-cli`).
-- **`tests/`**: Unit tests via `pytest`.
+See [docs/TECHNICAL.md](docs/TECHNICAL.md) for full details.
 
-## Instructions
+* **Core**: `src/loterias` (OO design).
+* **CLI**: `src/cli.py` (Single entry point `preloto`).
+* **Tests**: `tests/` (pytest).
 
-### 1. Installation
+## Development Rules
 
-This project supports editable installation for ease of development:
+1. **Determinism is King**: All models generally must be seeded or sorted.
+2. **Clean Output**: CLI must output parseable JSON/CSV to stdout. Logs go to stderr.
+3. **Tests Required**: Any logic change requires a corresponding `pytest` test.
+4. **No "Lucky" Numbers**: We build scientific tools, not magic eight balls.
 
-```bash
-pip install -e .
-```
+## Documentation Map
 
-### 2. Execution
-
-Use the CLI tool to generate predictions:
-
-```bash
-preloto megasena
-```
-
-Or for reproducibility:
-
-```bash
-preloto megasena --model random --model-args seed:42
-```
-
-### 3. Testing
-
-Run the test suite:
-
-```bash
-pytest
-```
-
-## Documentation
-
-- **Architecture**: See `src/loterias/`.
+* **User Guide**: `README.md`
+* **Vision**: `docs/PRODUCT.md`
+* **Roadmap**: `docs/PLANNING.md`
