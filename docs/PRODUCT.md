@@ -2,7 +2,9 @@
 
 ## Vision
 
-**Preloto** is a laboratory for validating lottery prediction hypotheses. Unlike "lucky number" generators, it aims to be a scientific tool to test whether statistical or mathematical models can perform differently from pure chance over time.
+**Preloto** is a laboratory for experimenting with probability.
+
+**Philosophy**: We approach lottery games with scientific humility. We understand that these are games of independent random events. Our goal is not to "break" the system or find nonexistent patterns, but to **surf the natural distribution** of probabilities. We provide a tool to generate bets that respect statistical likelihoods, avoiding statistically anomalous sequences (unless desired) and allowing users to play in harmony with the math.
 
 ## Key Features
 
