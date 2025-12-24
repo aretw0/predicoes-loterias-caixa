@@ -56,15 +56,12 @@ class Checker:
             # However, usually 'Concurso' is preserved.
             
             try:
-                # We need to check if 'Concurso' is in columns.
-                if 'Concurso' in lottery.data.columns:
-                    result_row = lottery.data[lottery.data['Concurso'] == contest]
-                else:
-                    # Fallback: assume index is Concurso (risky) or try to find it.
-                    # For now, let's assume 'Concurso' is present.
-                    # If not, we might fail.
-                    print(f"Warning: 'Concurso' column not found for {game}. Skipping bet {bet_id}.")
+                # Ensure 'Concurso' column exists - fail fast if data contract is broken
+                if 'Concurso' not in lottery.data.columns:
+                    print(f"Error: 'Concurso' column missing in data for {game}. Check data processing.")
                     continue
+
+                result_row = lottery.data[lottery.data['Concurso'] == contest]
                 
                 if result_row.empty:
                     print(f"Result for {game} contest {contest} not found yet.")
