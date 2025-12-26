@@ -129,26 +129,22 @@ def test_gap_model(gap_mock_data):
 def test_surfing_model(gap_mock_data):
     # Range 1-10, pick 3
     model = SurfingModel(range_min=1, range_max=10, draw_count=3)
-    # Window size default 30, but dataset is 10, so uses all.
-    # Let's restrict window size to 3 manually
-    model.window_size = 3
     model.train(gap_mock_data)
     
-    # Last 3 draws:
+    # Last 3 draws (window=3)
     # [1, 2, 3]
     # [10, 5, 6]
     # [1, 2, 3]
     
-    frequency = pd.Series([2, 2, 2, 0, 1, 1, 0, 0, 0, 1], index=range(1, 11))
+    # frequency: 1,2,3 appear 2 times each.
     
-    # prediction should be 1, 2, 3 (count 2)
-    
-    prediction = model.predict(count=3)
+    # Use window kwarg
+    prediction = model.predict(count=3, window=3)
     # Top 3 hot numbers: 1, 2, 3
     assert prediction == [1, 2, 3]
 
 def test_surfing_model_default_window(gap_mock_data):
-    # Uses all 10 draws
+    # Uses default window (30), encompassing all 10 draws.
     model = SurfingModel(range_min=1, range_max=10, draw_count=1)
     model.train(gap_mock_data)
     

@@ -18,9 +18,11 @@ We use Semantic Versioning (SemVer).
 
 ### v0.2.0 - Model Research & Expansion (Next)
 
-* [ ] **Research**: Study statistical distributions (e.g., Law of Large Numbers, Poisson) to identify potential "surfing" strategies.
-* [ ] **New Models**: Implement models based on research (e.g., avoiding unlikely sequences).
-* [ ] **Academic Integrity**: Ensure all new models have a clear mathematical basis, acknowledging the stochastic nature of the game.
+* [x] **Research**: Study statistical distributions (e.g., Law of Large Numbers, Poisson) to identify potential "surfing" strategies.
+* [x] **New Models**: Implement models based on research (GapModel, SurfingModel).
+  * `GapModel`: Exploits mean reversion (gambler's fallacy).
+  * `SurfingModel`: Exploits clustering (hot hands).
+* [ ] **Academic Integrity**: Write disclaimer about the stochastic nature (probabilistic vs deterministic guarantees).
 * [ ] Advanced statistical filters.
 * [ ] Machine Learning implementations (if proven viable in analysis).
 

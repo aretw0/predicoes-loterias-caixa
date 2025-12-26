@@ -28,10 +28,16 @@ Generate a reproducible prediction:
 preloto megasena --model random --model-args seed:42
 ```
 
-Use a specific model (e.g., Least Frequent numbers):
+Use the **Gap Model** (picks "due" numbers):
 
 ```bash
-preloto lotofacil --model frequency --model-args order:asc
+preloto megasena --model gap
+```
+
+Use the **Surfing Model** (picks "hot" numbers):
+
+```bash
+preloto lotofacil --model surfing
 ```
 
 ### Run Tests
