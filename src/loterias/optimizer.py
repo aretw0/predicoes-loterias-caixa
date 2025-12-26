@@ -49,7 +49,9 @@ class GeneticOptimizer:
         # Suppress prints
         try:
             results = backtester.run(draws_to_test=draws_to_test, prediction_size=self.game_config['default_play'], silent=True)
-        except Exception:
+        except Exception as e:
+            import sys
+            print(f"Error evaluating individual {individual}: {e}", file=sys.stderr)
             return 0.0
 
         # Calculate Score

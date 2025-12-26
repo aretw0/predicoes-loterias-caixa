@@ -40,6 +40,43 @@ Use the **Surfing Model** (picks "hot" numbers):
 preloto lotofacil --model surfing
 ```
 
+### Advanced Usage
+
+**Hybrid Model (Ensemble)**:
+Combine strategies with custom weights.
+
+```bash
+preloto megasena --model hybrid --model-args w_gap:1 w_freq:0.5
+```
+
+**Genetic Optimization**:
+Automatically find the best weights for the Hybrid model.
+
+```bash
+preloto megasena --optimize
+```
+
+**Advanced Filters**:
+Apply statistical constraints (e.g., Sum of numbers between 100-200, exactly 3 odd numbers).
+
+```bash
+preloto megasena --filters "sum:100-200,odd:3"
+```
+
+**Backtesting**:
+Test how a model would have performed in the past.
+
+```bash
+preloto megasena --model surfing --backtest --draws 50
+```
+
+**Machine Learning (Experimental)**:
+Use Random Forest to predict probabilities.
+
+```bash
+preloto megasena --model rf
+```
+
 ### Run Tests
 
 ```bash
