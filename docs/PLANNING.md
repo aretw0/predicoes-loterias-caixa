@@ -26,6 +26,10 @@ We use Semantic Versioning (SemVer).
 * [ ] Advanced statistical filters.
 * [ ] Machine Learning implementations (if proven viable in analysis).
 
+### v0.2.1 - CLI Refactor (Current)
+
+* [ ] **Refactor**: Split `src/cli.py` monolith into `handle_prediction` and `handle_backtest`.
+
 ### v0.3.0 - Future & Integration
 
 * [ ] "Hypothetical P&L": Tracking theoretical performance over time.

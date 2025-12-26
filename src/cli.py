@@ -72,40 +72,45 @@ def run_preloto(args):
     model_args = parse_model_args(args.model_args)
 
     if args.backtest:
-        from src.loterias.backtester import Backtester
-        
-        backtester = Backtester(
-            lottery=lottery, 
-            model_type=args.model, 
-            model_args=model_args, 
-            range_min=game_config['min'], 
-            range_max=game_config['max'], 
-            draw_count=game_config['draw']
-        )
-        
-        try:
-            results = backtester.run(draws_to_test=args.draws, prediction_size=quantity)
-            
-            # Filter output based on verbose flag
-            output_results = results.copy()
-            if not args.verbose:
-                if 'details' in output_results:
-                    del output_results['details']
-            
-            # Print results to stdout
-            print(json.dumps(output_results, indent=2, default=str))
-            
-            if args.output:
-                 # Save FULL results to file regardless of verbose flag? 
-                 # Usually users want full detail in file, summary on screen.
-                 with open(args.output, 'w') as f:
-                     json.dump(results, f, indent=2, default=str)
-                     
-        except Exception as e:
-            print(f"Error running backtest: {e}", file=sys.stderr)
-            sys.exit(1)
-        return
+        handle_backtest(args, lottery, game_config, model_args, quantity)
+    else:
+        handle_prediction(args, lottery, game_config, model_args, quantity)
 
+def handle_backtest(args, lottery, game_config, model_args, quantity):
+    from src.loterias.backtester import Backtester
+    
+    backtester = Backtester(
+        lottery=lottery, 
+        model_type=args.model, 
+        model_args=model_args, 
+        range_min=game_config['min'], 
+        range_max=game_config['max'], 
+        draw_count=game_config['draw']
+    )
+    
+    try:
+        results = backtester.run(draws_to_test=args.draws, prediction_size=quantity)
+        
+        # Filter output based on verbose flag
+        output_results = results.copy()
+        if not args.verbose:
+            if 'details' in output_results:
+                del output_results['details']
+        
+        # Print results to stdout
+        print(json.dumps(output_results, indent=2, default=str))
+        
+        if args.output:
+                # Save FULL results to file regardless of verbose flag? 
+                # Usually users want full detail in file, summary on screen.
+                with open(args.output, 'w') as f:
+                    json.dump(results, f, indent=2, default=str)
+                    
+    except Exception as e:
+        print(f"Error running backtest: {e}", file=sys.stderr)
+        sys.exit(1)
+
+def handle_prediction(args, lottery, game_config, model_args, quantity):
     # Initialize Model
     try:
         model = ModelFactory.create_model(args.model, game_config['min'], game_config['max'], game_config['draw'])
