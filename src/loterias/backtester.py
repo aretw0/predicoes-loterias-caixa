@@ -11,11 +11,12 @@ class Backtester:
         self.range_max = range_max
         self.draw_count = draw_count
         
-    def run(self, draws_to_test: int = 100, prediction_size: int = None) -> Dict[str, Any]:
+    def run(self, draws_to_test: int = 100, prediction_size: int = None, silent: bool = False) -> Dict[str, Any]:
         """
         Runs the backtest.
         :param draws_to_test: Number of most recent draws to test.
         :param prediction_size: Number of balls to predict per draw (bet size).
+        :param silent: If True, suppresses print output.
         """
         if prediction_size is None:
             prediction_size = self.draw_count # Default to drawing game size
@@ -34,13 +35,15 @@ class Backtester:
         total_prize = 0.0
         hits_distribution = {}
         
-        print(f"Starting backtest for {self.model_type} on {self.lottery.name}...")
-        print(f"Testing last {draws_to_test} draws. Prediction size: {prediction_size}.")
+        if not silent:
+            print(f"Starting backtest for {self.model_type} on {self.lottery.name}...")
+            print(f"Testing last {draws_to_test} draws. Prediction size: {prediction_size}.")
         
         # Iterating through history
         min_history = 100 # Safe margin
         if start_index < min_history:
-             print(f"Warning: Start index {start_index} is low. Early predictions might be poor.")
+             if not silent:
+                print(f"Warning: Start index {start_index} is low. Early predictions might be poor.")
              
         for i in range(start_index, total_draws):
             # Split data

@@ -35,6 +35,11 @@ def main():
     parser.add_argument('--draws', type=int, default=100, help="Number of past draws to backtest (default: 100).")
     parser.add_argument('--verbose', action='store_true', help="Show detailed output for every draw in backtest.")
     parser.add_argument('--filters', type=str, help="Statistical filters (e.g. 'sum:100-200,odd:3').")
+    
+    # Optimization Arguments
+    parser.add_argument('--optimize', action='store_true', help="Run Genetic Optimization to find best model weights.")
+    parser.add_argument('--generations', type=int, default=5, help="Number of generations for optimization (default: 5).")
+    parser.add_argument('--population', type=int, default=10, help="Population size for optimization (default: 10).")
 
     args = parser.parse_args()
     
@@ -70,10 +75,40 @@ def main():
     # Parse model args
     model_args = parse_model_args(args.model_args)
 
-    if args.backtest:
+    if args.optimize:
+        handle_optimization(args, lottery, game_config)
+    elif args.backtest:
         handle_backtest(args, lottery, game_config, model_args, quantity)
     else:
         handle_prediction(args, lottery, game_config, model_args, quantity)
+
+def handle_optimization(args, lottery, game_config):
+    from src.loterias.optimizer import GeneticOptimizer
+    
+    optimizer = GeneticOptimizer(
+        lottery=lottery, 
+        game_config=game_config, 
+        population_size=args.population, 
+        generations=args.generations
+    )
+    
+    try:
+        best_weights = optimizer.optimize()
+        w_gap, w_freq, w_surf = best_weights
+        
+        print("\n" + "="*40)
+        print("OPTIMIZATION COMPLETE")
+        print("="*40)
+        print(f"Best Weights Found:")
+        print(f"  Gap Weight:       {w_gap:.4f}")
+        print(f"  Frequency Weight: {w_freq:.4f}")
+        print(f"  Surfing Weight:   {w_surf:.4f}")
+        print("-" * 40)
+        print("To use these weights, run:")
+        print(f"preloto {args.game} --model hybrid --model-args w_gap:{w_gap:.2f} w_freq:{w_freq:.2f} w_surf:{w_surf:.2f}")
+    except Exception as e:
+        print(f"Error during optimization: {e}", file=sys.stderr)
+        sys.exit(1)
 
 def handle_backtest(args, lottery, game_config, model_args, quantity):
     from src.loterias.backtester import Backtester
