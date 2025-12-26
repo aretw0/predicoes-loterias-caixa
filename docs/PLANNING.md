@@ -24,8 +24,8 @@ We use Semantic Versioning (SemVer).
   * `SurfingModel`: Exploits clustering (hot hands).
 * [x] **Refactor**: Split `src/cli.py` monolith into `handle_prediction` and `handle_backtest`.
 * [x] **Academic Integrity**: Write disclaimer about the stochastic nature (probabilistic vs deterministic guarantees).
-* [ ] Advanced statistical filters.
-* [ ] Machine Learning implementations (if proven viable in analysis).
+* [x] **Advanced statistical filters**: Rejection sampling for sum, odd/even constraints.
+* [x] **Machine Learning**: Evaluation - Deferred in favor of heuristic models and statistical filters.
 
 ### v0.3.0 - Future & Integration
 

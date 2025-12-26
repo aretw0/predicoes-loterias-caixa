@@ -34,18 +34,17 @@ def main():
     parser.add_argument('--backtest', action='store_true', help="Run backtesting simulation.")
     parser.add_argument('--draws', type=int, default=100, help="Number of past draws to backtest (default: 100).")
     parser.add_argument('--verbose', action='store_true', help="Show detailed output for every draw in backtest.")
+    parser.add_argument('--filters', type=str, help="Statistical filters (e.g. 'sum:100-200,odd:3').")
 
     args = parser.parse_args()
-    run_preloto(args)
-
-def run_preloto(args):
+    
     # Configuration and Defaults
     defaults = {
         'megasena': {'min': 1, 'max': 60, 'draw': 6, 'default_play': 20},
         'lotofacil': {'min': 1, 'max': 25, 'draw': 15, 'default_play': 20},
         'quina': {'min': 1, 'max': 80, 'draw': 5, 'default_play': 15}
     }
-
+    
     if args.game not in defaults:
         print(f"Error: Game {args.game} not supported.", file=sys.stderr)
         sys.exit(1)
@@ -123,6 +122,10 @@ def handle_prediction(args, lottery, game_config, model_args, quantity):
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
 
+    # Initialize Filters
+    from src.loterias.filters import PredictionFilter
+    prediction_filter = PredictionFilter(args.filters) if args.filters else None
+
     # Calculate Costs
     price_per_bet = lottery.get_price(quantity)
     
@@ -134,8 +137,25 @@ def handle_prediction(args, lottery, game_config, model_args, quantity):
             print(f"Error: seed must be an integer.", file=sys.stderr)
             sys.exit(1)
 
-    # Generate Prediction
-    prediction = model.predict(count=quantity, **model_args)
+    # Generate Prediction (with Rejection Sampling)
+    max_retries = 1000
+    prediction = []
+    
+    for _ in range(max_retries):
+        temp_prediction = model.predict(count=quantity, **model_args)
+        
+        if prediction_filter:
+            if prediction_filter.validate(temp_prediction):
+                prediction = temp_prediction
+                break
+            # If not valid, loop continues (reject)
+        else:
+            prediction = temp_prediction
+            break
+    else:
+        # Loop finished without break -> Retries exhausted
+        print(f"Error: Could not generate a prediction satisfying filters '{args.filters}' after {max_retries} retries.", file=sys.stderr)
+        sys.exit(1)
     
     result = {
         "game": args.game,
@@ -144,6 +164,9 @@ def handle_prediction(args, lottery, game_config, model_args, quantity):
         "cost": price_per_bet,
         "parameters": model_args
     }
+    
+    if args.filters:
+        result["filters"] = args.filters
     
     # Export/Output
     if args.output:
