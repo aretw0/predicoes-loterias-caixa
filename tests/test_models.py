@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from src.loterias.models import RandomModel, FrequencyModel
+from src.loterias.models import RandomModel, FrequencyModel, GapModel, SurfingModel
 
 @pytest.fixture
 def mock_data():
@@ -11,6 +11,26 @@ def mock_data():
             [1, 2, 4],
             [1, 5, 2],
             [1, 6, 3]
+        ]
+    }
+    return pd.DataFrame(data)
+
+@pytest.fixture
+def gap_mock_data():
+    # Create a small dataset of 10 draws for temporal models
+    # Numbers 1-10 range
+    data = {
+        'dezenas': [
+            [1, 2, 3], # Draw 0 (oldest)
+            [1, 4, 5],
+            [2, 3, 6],
+            [7, 8, 9],
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+            [1, 2, 3],
+            [10, 5, 6], # Draw 8
+            [1, 2, 3]   # Draw 9 (newest)
         ]
     }
     return pd.DataFrame(data)
@@ -84,3 +104,56 @@ def test_frequency_model_tie_breaking(mock_data):
     
     prediction = model.predict(count=5, order='asc')
     assert prediction == [3, 7, 8, 9, 10]
+
+def test_gap_model(gap_mock_data):
+    # Range 1-10, pick 3
+    model = GapModel(range_min=1, range_max=10, draw_count=3)
+    model.train(gap_mock_data)
+    
+    # Analysis based on mock_data (10 draws total)
+    # Number 4: Last appeared in index 5. Gap = 9 - 5 = 4
+    # Number 7: Last appeared in index 6. Gap = 9 - 6 = 3
+    # Number 8: Last appeared in index 6. Gap = 9 - 6 = 3
+    # Number 9: Last appeared in index 6. Gap = 9 - 6 = 3
+    # Number 10: Last appeared in index 8. Gap = 9 - 8 = 1
+    # ...
+    # So Number 4 has largest gap (4).
+    # Next are 7, 8, 9 with gap 3.
+    
+    prediction = model.predict(count=3)
+    
+    # Should contain 4, and two of starting with 7 (sorted asc for deterministic tie break)
+    # 4 (gap 4), 7 (gap 3), 8 (gap 3).
+    assert prediction == [4, 7, 8]
+
+def test_surfing_model(gap_mock_data):
+    # Range 1-10, pick 3
+    model = SurfingModel(range_min=1, range_max=10, draw_count=3)
+    # Window size default 30, but dataset is 10, so uses all.
+    # Let's restrict window size to 3 manually
+    model.window_size = 3
+    model.train(gap_mock_data)
+    
+    # Last 3 draws:
+    # [1, 2, 3]
+    # [10, 5, 6]
+    # [1, 2, 3]
+    
+    frequency = pd.Series([2, 2, 2, 0, 1, 1, 0, 0, 0, 1], index=range(1, 11))
+    
+    # prediction should be 1, 2, 3 (count 2)
+    
+    prediction = model.predict(count=3)
+    # Top 3 hot numbers: 1, 2, 3
+    assert prediction == [1, 2, 3]
+
+def test_surfing_model_default_window(gap_mock_data):
+    # Uses all 10 draws
+    model = SurfingModel(range_min=1, range_max=10, draw_count=1)
+    model.train(gap_mock_data)
+    
+    # 1 appears 5 times. 2 and 3 appear 5 times.
+    
+    prediction = model.predict(count=1)
+    # Should default to 1 because tie-break asc
+    assert prediction == [1]

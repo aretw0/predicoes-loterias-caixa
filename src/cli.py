@@ -4,8 +4,8 @@ import json
 from src.loterias.megasena import MegaSena
 from src.loterias.lotofacil import Lotofacil
 from src.loterias.quina import Quina
-from src.loterias.models import RandomModel, FrequencyModel
 from src.loterias.utils import export_to_json, export_to_csv
+from src.loterias.base import ModelFactory
 
 def parse_model_args(args_list):
     """Parses a list of strings in 'key:value' format into a dictionary."""
@@ -27,7 +27,7 @@ def main():
     parser.add_argument('game', type=str, choices=['megasena', 'lotofacil', 'quina'], help="The lottery game to predict for.")
     
     # Optional Arguments
-    parser.add_argument('--model', type=str, default='random', choices=['random', 'frequency'], help="The prediction model to use (default: random).")
+    parser.add_argument('--model', type=str, default='random', choices=['random', 'frequency', 'gap', 'surfing'], help="The prediction model to use (default: random).")
     parser.add_argument('--numbers', type=int, help="Quantity of numbers to play (defaults to max allowed).")
     parser.add_argument('--output', type=str, help="Output file for predictions (e.g., predictions.json or predictions.csv).")
     parser.add_argument('--model-args', nargs='*', help="Model arguments in key:value format (e.g., seed:42, order:asc).")
@@ -69,15 +69,15 @@ def run_preloto(args):
     model_args = parse_model_args(args.model_args)
 
     # Initialize Model
-    if args.model == 'random':
-        model = RandomModel(game_config['min'], game_config['max'], game_config['draw'])
-    elif args.model == 'frequency':
-        model = FrequencyModel(game_config['min'], game_config['max'], game_config['draw'])
-        # Train model
-        df = lottery.preprocess_data()
-        model.train(df)
-    else:
-        print(f"Error: Model {args.model} not supported.", file=sys.stderr)
+    try:
+        model = ModelFactory.create_model(args.model, game_config['min'], game_config['max'], game_config['draw'])
+        
+        # Train model if needed (Frequency, Gap, Surfing all need data)
+        if args.model != 'random':
+             df = lottery.preprocess_data()
+             model.train(df)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
 
     # Calculate Costs
