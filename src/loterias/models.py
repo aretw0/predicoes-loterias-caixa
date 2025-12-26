@@ -45,7 +45,7 @@ class FrequencyModel(Model):
             raise ValueError("Model has not been trained yet.")
             
         final_count = count if count is not None else self.draw_count
-        order = kwargs.get('order', 'desc')
+        order = kwargs.get('order', 'asc')
         
         # Convert Series to DataFrame for multi-column sorting
         df = self.weights.reset_index(name='weight')
