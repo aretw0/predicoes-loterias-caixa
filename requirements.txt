@@ -4,3 +4,4 @@ openpyxl
 pytest
 scipy
 tabulate
+scikit-learn
