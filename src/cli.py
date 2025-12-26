@@ -33,6 +33,7 @@ def main():
     parser.add_argument('--model-args', nargs='*', help="Model arguments in key:value format (e.g., seed:42, order:asc).")
     parser.add_argument('--backtest', action='store_true', help="Run backtesting simulation.")
     parser.add_argument('--draws', type=int, default=100, help="Number of past draws to backtest (default: 100).")
+    parser.add_argument('--verbose', action='store_true', help="Show detailed output for every draw in backtest.")
 
     args = parser.parse_args()
     run_preloto(args)
@@ -85,10 +86,18 @@ def run_preloto(args):
         try:
             results = backtester.run(draws_to_test=args.draws, prediction_size=quantity)
             
-            # Print minimal results to stdout
-            print(json.dumps(results, indent=2, default=str))
+            # Filter output based on verbose flag
+            output_results = results.copy()
+            if not args.verbose:
+                if 'details' in output_results:
+                    del output_results['details']
+            
+            # Print results to stdout
+            print(json.dumps(output_results, indent=2, default=str))
             
             if args.output:
+                 # Save FULL results to file regardless of verbose flag? 
+                 # Usually users want full detail in file, summary on screen.
                  with open(args.output, 'w') as f:
                      json.dump(results, f, indent=2, default=str)
                      
