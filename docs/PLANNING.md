@@ -16,19 +16,16 @@ We use Semantic Versioning (SemVer).
 * [x] Documentation Restructure
 * [x] Editable Install Support
 
-### v0.2.0 - Model Research & Expansion (Next)
+### v0.2.0 - Model Research & Expansion (Current)
 
 * [x] **Research**: Study statistical distributions (e.g., Law of Large Numbers, Poisson) to identify potential "surfing" strategies.
 * [x] **New Models**: Implement models based on research (GapModel, SurfingModel).
   * `GapModel`: Exploits mean reversion (gambler's fallacy).
   * `SurfingModel`: Exploits clustering (hot hands).
-* [ ] **Academic Integrity**: Write disclaimer about the stochastic nature (probabilistic vs deterministic guarantees).
+* [x] **Refactor**: Split `src/cli.py` monolith into `handle_prediction` and `handle_backtest`.
+* [x] **Academic Integrity**: Write disclaimer about the stochastic nature (probabilistic vs deterministic guarantees).
 * [ ] Advanced statistical filters.
 * [ ] Machine Learning implementations (if proven viable in analysis).
-
-### v0.2.1 - CLI Refactor (Current)
-
-* [ ] **Refactor**: Split `src/cli.py` monolith into `handle_prediction` and `handle_backtest`.
 
 ### v0.3.0 - Future & Integration
 
