@@ -27,12 +27,12 @@ We use Semantic Versioning (SemVer).
 * [x] **Advanced statistical filters**: Rejection sampling for sum, odd/even constraints.
 * [x] **Machine Learning**: Evaluation - Deferred in favor of heuristic models and statistical filters.
 
-### v0.3.0 - Future & Integration
+### v0.3.0 - Ensemble & Optimization (Next)
 
-* [ ] "Hypothetical P&L": Tracking theoretical performance over time.
-* [ ] External Tools: Integration with analysis pipelines.
+* [ ] **Hybrid Model**: Combine `Gap`, `Frequency`, and `Surfing` into a weighted consensus model.
+* [ ] **Genetic Optimizer**: Use Genetic Algorithms (GA) to "evolve" the optimal weights for the Hybrid Model using the Backtester.
+* [ ] **ML Exploration**: Implement a `RandomForestModel` using `scikit-learn` to benchmark against heuristics.
 
 ## Future Ideas
 
 * **Web Interface**: A static site generating daily predictions.
-* **Backtesting Engine**: Simulate strategies over past years.
