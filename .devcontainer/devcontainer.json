@@ -4,6 +4,7 @@
 		"dockerfile": "Dockerfile",
 		"context": ".."
 	},
+    "runArgs": ["--gpus", "all"],
 	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {
 			"installZsh": true,
