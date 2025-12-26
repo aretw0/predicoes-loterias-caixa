@@ -31,6 +31,8 @@ def main():
     parser.add_argument('--numbers', type=int, help="Quantity of numbers to play (defaults to max allowed).")
     parser.add_argument('--output', type=str, help="Output file for predictions (e.g., predictions.json or predictions.csv).")
     parser.add_argument('--model-args', nargs='*', help="Model arguments in key:value format (e.g., seed:42, order:asc).")
+    parser.add_argument('--backtest', action='store_true', help="Run backtesting simulation.")
+    parser.add_argument('--draws', type=int, default=100, help="Number of past draws to backtest (default: 100).")
 
     args = parser.parse_args()
     run_preloto(args)
@@ -67,6 +69,33 @@ def run_preloto(args):
 
     # Parse model args
     model_args = parse_model_args(args.model_args)
+
+    if args.backtest:
+        from src.loterias.backtester import Backtester
+        
+        backtester = Backtester(
+            lottery=lottery, 
+            model_type=args.model, 
+            model_args=model_args, 
+            range_min=game_config['min'], 
+            range_max=game_config['max'], 
+            draw_count=game_config['draw']
+        )
+        
+        try:
+            results = backtester.run(draws_to_test=args.draws, prediction_size=quantity)
+            
+            # Print minimal results to stdout
+            print(json.dumps(results, indent=2, default=str))
+            
+            if args.output:
+                 with open(args.output, 'w') as f:
+                     json.dump(results, f, indent=2, default=str)
+                     
+        except Exception as e:
+            print(f"Error running backtest: {e}", file=sys.stderr)
+            sys.exit(1)
+        return
 
     # Initialize Model
     try:

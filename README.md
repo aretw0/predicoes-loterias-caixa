@@ -50,4 +50,5 @@ pytest
 
 * **[Product Vision](docs/PRODUCT.md)**: Features and goals.
 * **[Technical Guide](docs/TECHNICAL.md)**: Architecture and development.
-* **[Planning & Versioning](docs/PLANNING.md)**: Roadmap (Current: v0.1.0).
+* **[Planning & Versioning](docs/PLANNING.md)**: Roadmap (Current: v0.2.0).
+* **[Disclaimer](docs/DISCLAIMER.md)**: Mathematical validity and academic integrity.
