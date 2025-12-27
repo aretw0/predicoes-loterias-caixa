@@ -4,11 +4,11 @@
 
 We use Semantic Versioning (SemVer).
 
-* **Current Version**: `0.1.0`
+* **Current Version**: `0.4.0`
 
 ## Roadmap
 
-### v0.1.0 - Foundation (Current)
+### v0.1.0 - Foundation (Completed)
 
 * [x] Robust CLI (`preloto`)
 * [x] Deterministic Models (`seed`, sorting)
@@ -16,22 +16,32 @@ We use Semantic Versioning (SemVer).
 * [x] Documentation Restructure
 * [x] Editable Install Support
 
-### v0.2.0 - Model Research & Expansion (Current)
+### v0.2.0 - Model Research & Expansion (Completed)
 
-* [x] **Research**: Study statistical distributions (e.g., Law of Large Numbers, Poisson) to identify potential "surfing" strategies.
+* [x] **Research**: Study statistical distributions (e.g., Law of Large Numbers, Poisson).
 * [x] **New Models**: Implement models based on research (GapModel, SurfingModel).
-  * `GapModel`: Exploits mean reversion (gambler's fallacy).
-  * `SurfingModel`: Exploits clustering (hot hands).
-* [x] **Refactor**: Split `src/cli.py` monolith into `handle_prediction` and `handle_backtest`.
-* [x] **Academic Integrity**: Write disclaimer about the stochastic nature (probabilistic vs deterministic guarantees).
-* [x] **Advanced statistical filters**: Rejection sampling for sum, odd/even constraints.
-* [x] **Machine Learning**: Evaluation - Deferred in favor of heuristic models and statistical filters.
+* [x] **Refactor**: Split `src/cli.py` monolith.
+* [x] **Filters**: Rejection sampling strategy.
 
-### v0.3.0 - Ensemble & Optimization (Next)
+### v0.3.0 - Ensemble, Optimization & ML (Completed)
 
-* [ ] **Hybrid Model**: Combine `Gap`, `Frequency`, and `Surfing` into a weighted consensus model.
-* [ ] **Genetic Optimizer**: Use Genetic Algorithms (GA) to "evolve" the optimal weights for the Hybrid Model using the Backtester.
-* [ ] **ML Exploration**: Implement a `RandomForestModel` using `scikit-learn` to benchmark against heuristics.
+* [x] **Hybrid Model**: Weighted consensus model.
+* [x] **Genetic Optimizer**: GA for weight optimization.
+* [x] **ML Exploration**: `RandomForestModel` implementation.
+* [x] **Deep Learning**: `LSTMModel` implementation (v0.3.5).
+
+### v0.4.0 - Consolidation & Visibility (Current Focus)
+
+**Goal**: "Pé no Chão" (Grounded). Focus on understanding data before predicting.
+
+* [ ] **Analysis Module (`preloto analyze`)**:
+    *   Generate machine-readable JSON reports (statistics, distributions).
+    *   Generate human-readable insights.
+* [ ] **Feature Engineering**:
+    *   Enrich models (`RF`, `LSTM`) with structural features (Sum, Odd/Even, Quadrants) instead of raw numbers.
+* [ ] **Simulation**:
+    *   Implement **Monte Carlo** simulation based on enriched distributions.
+* [ ] **Cleanup**: remove noise and consolidate experimental code.
 
 ## Future Ideas
 

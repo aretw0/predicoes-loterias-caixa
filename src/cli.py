@@ -44,6 +44,9 @@ def main():
     parser.add_argument('--generations', type=int, default=5, help="Number of generations for optimization (default: 5).")
     parser.add_argument('--population', type=int, default=10, help="Population size for optimization (default: 10).")
 
+    # Analysis Arguments
+    parser.add_argument('--analyze', action='store_true', help="Run statistical analysis on past draws instead of predicting.")
+
     args = parser.parse_args()
     
     # Configuration and Defaults
@@ -80,10 +83,30 @@ def main():
 
     if args.optimize:
         handle_optimization(args, lottery, game_config)
+    elif args.analyze:
+        handle_analysis(args, lottery, game_config)
     elif args.backtest:
         handle_backtest(args, lottery, game_config, model_args, quantity)
     else:
         handle_prediction(args, lottery, game_config, model_args, quantity)
+
+def handle_analysis(args, lottery, game_config):
+    from src.loterias.analysis import Analyzer
+    import json
+    
+    # Load data
+    df = lottery.preprocess_data()
+    
+    # Filter by draws if needed (same as backtest --draws logic?)
+    # If user specfies --draws, we analyze only last N. 
+    # args.draws default is 100 in CLI.
+    if args.draws:
+         df = df.iloc[-args.draws:]
+    
+    analyzer = Analyzer(df, game_config['min'], game_config['max'])
+    report = analyzer.analyze()
+    
+    print(json.dumps(report, indent=2))
 
 def handle_optimization(args, lottery, game_config):
     from src.loterias.optimizer import GeneticOptimizer

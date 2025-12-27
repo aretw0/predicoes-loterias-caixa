@@ -1,4 +1,5 @@
 from typing import List, Tuple, Optional
+from .features import calculate_sum, count_odds, count_evens
 
 class PredictionFilter:
     def __init__(self, filters_str: str):
@@ -48,19 +49,19 @@ class PredictionFilter:
             return False
 
         if 'sum' in self.filters:
-            s = sum(numbers)
+            s = calculate_sum(numbers)
             min_v, max_v = self.filters['sum']
             if not (min_v <= s <= max_v):
                 return False
 
         if 'odd' in self.filters:
-            odd_count = sum(1 for n in numbers if n % 2 != 0)
+            odd_count = count_odds(numbers)
             min_v, max_v = self.filters['odd']
             if not (min_v <= odd_count <= max_v):
                 return False
                 
         if 'even' in self.filters:
-            even_count = sum(1 for n in numbers if n % 2 == 0)
+            even_count = count_evens(numbers)
             min_v, max_v = self.filters['even']
             if not (min_v <= even_count <= max_v):
                 return False
