@@ -7,15 +7,20 @@ name = "predicoes-loterias-caixa"
 version = "0.1.0"
 description = "Lottery prediction laboratory"
 authors = [
-    {name = "User", email = "user@example.com"},
+    {name = "Arthur Silva", email = "arthursilva.dev@gmail.com"},
 ]
 dependencies = [
     "requests",
     "pandas",
     "openpyxl",
-    "pytest"
+    "pytest",
+    "scipy",
+    "tabulate",
+    "scikit-learn",
+    "tensorflow[and-cuda]",
+    "xgboost"
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 
 [project.scripts]
 preloto = "src.cli:main"
