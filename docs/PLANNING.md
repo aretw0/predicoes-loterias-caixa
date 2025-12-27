@@ -4,7 +4,7 @@
 
 We use Semantic Versioning (SemVer).
 
-* **Current Version**: `0.4.0`
+* **Current Version**: `0.5.0`
 
 ## Roadmap
 
@@ -28,20 +28,23 @@ We use Semantic Versioning (SemVer).
 * [x] **Hybrid Model**: Weighted consensus model.
 * [x] **Genetic Optimizer**: GA for weight optimization.
 * [x] **ML Exploration**: `RandomForestModel` implementation.
-* [x] **Deep Learning**: `LSTMModel` implementation (v0.3.5).
+* [x] **Deep Learning**: `LSTMModel` implementation.
 
-### v0.4.0 - Consolidation & Visibility (Current Focus)
+### v0.4.0 - Visibility & Simulation (Completed)
 
 **Goal**: "Pé no Chão" (Grounded). Focus on understanding data before predicting.
 
-* [ ] **Analysis Module (`preloto analyze`)**:
-    *   Generate machine-readable JSON reports (statistics, distributions).
-    *   Generate human-readable insights.
-* [ ] **Feature Engineering**:
-    *   Enrich models (`RF`, `LSTM`) with structural features (Sum, Odd/Even, Quadrants) instead of raw numbers.
-* [ ] **Simulation**:
-    *   Implement **Monte Carlo** simulation based on enriched distributions.
-* [ ] **Cleanup**: remove noise and consolidate experimental code.
+* [x] **Analysis Module**: `preloto analyze` (See the chaos).
+* [x] **Feature Engineering**: Enrich models with structural features.
+* [x] **Simulation**: Implement **Monte Carlo** simulation.
+
+### v0.5.0 - Consensus & High Performance (Current)
+
+**Goal**: Validate the "Tira-Teima" and optimize for deeper insights.
+
+* [ ] **Ensemble Backtesting**: Validate intersection strategies.
+* [ ] **XGBoost**: Gradient Boosting for high-performance decision trees.
+* [ ] **Hyperparameter Tuning**: Automated search for best `units`/`trees`.
 
 ## Future Ideas
 
