@@ -27,7 +27,7 @@ def main():
     parser.add_argument('game', type=str, choices=['megasena', 'lotofacil', 'quina'], help="The lottery game to predict for.")
     
     # Optional Arguments
-    parser.add_argument('--model', type=str, default='random', choices=['random', 'frequency', 'gap', 'surfing', 'hybrid', 'rf'], help="The prediction model to use (default: random).")
+    parser.add_argument('--model', type=str, default='random', choices=['random', 'frequency', 'gap', 'surfing', 'hybrid', 'rf', 'lstm'], help="The prediction model to use (default: random).")
     parser.add_argument('--numbers', type=int, help="Quantity of numbers to play (defaults to max allowed).")
     parser.add_argument('--output', type=str, help="Output file for predictions (e.g., predictions.json or predictions.csv).")
     parser.add_argument('--model-args', nargs='*', help="Model arguments in key:value format (e.g., seed:42, order:asc).")
@@ -35,6 +35,9 @@ def main():
     parser.add_argument('--draws', type=int, default=100, help="Number of past draws to backtest (default: 100).")
     parser.add_argument('--verbose', action='store_true', help="Show detailed output for every draw in backtest.")
     parser.add_argument('--filters', type=str, help="Statistical filters (e.g. 'sum:100-200,odd:3').")
+    
+    # Deep Learning Arguments
+    parser.add_argument('--epochs', type=int, default=50, help="Number of epochs for training Deep Learning models (default: 50).")
     
     # Optimization Arguments
     parser.add_argument('--optimize', action='store_true', help="Run Genetic Optimization to find best model weights.")
@@ -150,9 +153,13 @@ def handle_prediction(args, lottery, game_config, model_args, quantity):
         model = ModelFactory.create_model(args.model, game_config['min'], game_config['max'], game_config['draw'])
         
         # Train model if needed (Frequency, Gap, Surfing all need data)
+        # Train model if needed (Frequency, Gap, Surfing, LSTM all need data)
         if args.model != 'random':
              df = lottery.preprocess_data()
-             model.train(df)
+             if args.model == 'lstm':
+                 model.train(df, epochs=args.epochs)
+             else:
+                 model.train(df)
     except ValueError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)

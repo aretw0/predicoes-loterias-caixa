@@ -67,7 +67,7 @@ class ModelFactory:
     
     @staticmethod
     def create_model(model_type: str, range_min: int, range_max: int, draw_count: int) -> Model:
-        from .models import RandomModel, FrequencyModel, GapModel, SurfingModel, HybridModel, RandomForestModel
+        from .models import RandomModel, FrequencyModel, GapModel, SurfingModel, HybridModel, RandomForestModel, LSTMModel
         
         if model_type == 'random':
             return RandomModel(range_min, range_max, draw_count)
@@ -81,5 +81,7 @@ class ModelFactory:
             return HybridModel(range_min, range_max, draw_count)
         elif model_type == 'rf':
             return RandomForestModel(range_min, range_max, draw_count)
+        elif model_type == 'lstm':
+            return LSTMModel(range_min, range_max, draw_count)
         else:
             raise ValueError(f"Unknown model type: {model_type}")
