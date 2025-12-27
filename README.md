@@ -77,6 +77,13 @@ Use Random Forest to predict probabilities.
 preloto megasena --model rf
 ```
 
+**Deep Learning (LSTM)**:
+Train a neural network to find temporal patterns. Requires TensorFlow.
+
+```bash
+preloto megasena --model lstm --epochs 100
+```
+
 ### Run Tests
 
 ```bash

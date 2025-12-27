@@ -6,7 +6,10 @@ The project follows a modular architecture within `src/loterias`:
 
 * **`base.py`**: Abstract Base Classes (`Lottery`, `Model`) defining the contract for new games and models.
 * **`data_manager.py`**: Handles downloading, caching, and loading data from the external [loterias-caixa-db](https://github.com/aretw0/loterias-caixa-db) repository.
-* **`models.py`**: Concrete implementations of prediction logic (`RandomModel`, `FrequencyModel`).
+* **`models`**: Concrete implementations of prediction logic:
+    * `rf_model.py`: Random Forest implementation.
+    * `lstm_model.py`: Deep Learning (LSTM) implementation.
+    * Other heuristic models (`frequency`, `gap`, etc.).
 * **Game Implementations**: `megasena.py`, `lotofacil.py`, `quina.py` inherit from `Lottery` to handle game-specific rules and data parsing.
 * **`utils.py`**: Helper functions for exporting data (JSON/CSV).
 
@@ -26,6 +29,7 @@ pip install -e .
 ```
 
 This installs dependencies (`pandas`, `requests`, `openpyxl`, `pytest`) and registers the `preloto` CLI command.
+* **Optional**: `tensorflow` is required for `--model lstm`.
 
 ### Testing
 
