@@ -5,11 +5,12 @@ from .models import RandomForestModel, LSTMModel, MonteCarloModel, XGBoostModel
 from .features import calculate_sum, count_odds, count_evens, calculate_spread
 
 class EnsembleBacktester:
-    def __init__(self, lottery: Lottery, range_min: int, range_max: int, draw_count: int):
+    def __init__(self, lottery: Lottery, range_min: int, range_max: int, draw_count: int, model_args: Dict[str, Any] = None):
         self.lottery = lottery
         self.range_min = range_min
         self.range_max = range_max
         self.draw_count = draw_count
+        self.model_args = model_args or {}
         
     def run(self, draws_to_test: int = 10, verbose: bool = True) -> Dict[str, Any]:
         """
@@ -26,10 +27,16 @@ class EnsembleBacktester:
         start_index = total_draws - draws_to_test
         results = []
         
+        # Parse common model args or defaults
+        rf_estimators = int(self.model_args.get('n_estimators', 100))
+        lstm_epochs = int(self.model_args.get('epochs', 10))
+        lstm_units = int(self.model_args.get('units', 128))
+        
         if verbose:
             print(f"Starting Ensemble Backtest on {self.lottery.name} for last {draws_to_test} draws...")
             print("Models: MC, RF, LSTM, XGB.")
-            print("Warning: This will perform full training for each step. Grab a coffee.")
+            print(f"Configuration: RF={rf_estimators} trees, LSTM={lstm_epochs} epochs.")
+            print("Warning: This will perform full training for each step.")
 
         for i in range(start_index, total_draws):
             train_data = df.iloc[:i].copy()
@@ -37,7 +44,6 @@ class EnsembleBacktester:
             target_numbers = set(target_draw['dezenas'])
             
             # Predict with all models
-            # We use moderate settings to keep it from taking literally forever
             preds = {}
             
             # 1. Monte Carlo
@@ -50,23 +56,22 @@ class EnsembleBacktester:
             # 2. Random Forest
             try:
                 rf = RandomForestModel(self.range_min, self.range_max, self.draw_count)
-                rf.train(train_data, n_estimators=100) # Fast-ish mode
+                rf.train(train_data, n_estimators=rf_estimators)
                 preds['rf'] = set(rf.predict())
             except: preds['rf'] = set()
 
             # 3. XGBoost
             try:
                 xgb_model = XGBoostModel(self.range_min, self.range_max, self.draw_count)
-                xgb_model.train(train_data, n_estimators=100)
+                # Pass all model_args to XGBoost as it handles kwargs broadly
+                xgb_model.train(train_data, **self.model_args) 
                 preds['xgb'] = set(xgb_model.predict())
             except: preds['xgb'] = set()
 
             # 4. LSTM
             try:
                 lstm = LSTMModel(self.range_min, self.range_max, self.draw_count)
-                # epochs=5 is very low, but enough to see if it learns *something* for backtest
-                # In real production 'tira-teima', user runs manually with epochs=100
-                lstm.train(train_data, epochs=10, batch_size=32, verbose=0) 
+                lstm.train(train_data, epochs=lstm_epochs, batch_size=32, verbose=0, units=lstm_units, **self.model_args) 
                 preds['lstm'] = set(lstm.predict())
             except: preds['lstm'] = set()
 

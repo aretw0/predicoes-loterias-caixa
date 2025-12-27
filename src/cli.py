@@ -83,23 +83,32 @@ def main():
 
     # Parse model args
     model_args = parse_model_args(args.model_args)
+    
+    # Inject convenience flags into model_args if not present
+    if args.epochs and 'epochs' not in model_args:
+        model_args['epochs'] = args.epochs
 
     if args.optimize:
         handle_optimization(args, lottery, game_config)
     elif args.analyze:
         handle_analysis(args, lottery, game_config)
+    elif args.ensemble:
+         handle_ensemble_backtest(args, lottery, game_config, model_args)
     elif args.backtest:
-        if args.ensemble:
-             handle_ensemble_backtest(args, lottery, game_config)
-        else:
-             handle_backtest(args, lottery, game_config, model_args, quantity)
+         handle_backtest(args, lottery, game_config, model_args, quantity)
     else:
         handle_prediction(args, lottery, game_config, model_args, quantity)
 
-def handle_ensemble_backtest(args, lottery, game_config):
+def handle_ensemble_backtest(args, lottery, game_config, model_args):
     from src.loterias.ensemble_backtester import EnsembleBacktester
     
-    backtester = EnsembleBacktester(lottery, game_config['min'], game_config['max'], game_config['draw'])
+    backtester = EnsembleBacktester(
+        lottery, 
+        game_config['min'], 
+        game_config['max'], 
+        game_config['draw'], 
+        model_args=model_args
+    )
     results = backtester.run(draws_to_test=args.draws, verbose=args.verbose)
     
     print(json.dumps(results, indent=2, default=str))

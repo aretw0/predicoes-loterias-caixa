@@ -98,6 +98,20 @@ View the "shape" of the chaos directly.
 preloto megasena --analyze
 ```
 
+**XGBoost (High Performance)**:
+Gradient Boosting for decision trees. Requires `xgboost`.
+
+```bash
+preloto megasena --model xgb
+```
+
+**Ensemble Strategy (Tira-Teima)**:
+Run ALL models (MC, RF, LSTM, XGB) and find the consensus.
+
+```bash
+preloto megasena --backtest --ensemble --draws 10
+```
+
 ### Run Tests
 
 ```bash
@@ -108,5 +122,6 @@ pytest
 
 * **[Product Vision](docs/PRODUCT.md)**: Features and goals.
 * **[Technical Guide](docs/TECHNICAL.md)**: Architecture and development.
-* **[Planning & Versioning](docs/PLANNING.md)**: Roadmap (Current: v0.2.0).
+* **[Planning & Versioning](docs/PLANNING.md)**: Roadmap (Current: v0.5.0).
+* **[Strategy Guide](docs/STRATEGY.md)**: How to win (statistically).
 * **[Disclaimer](docs/DISCLAIMER.md)**: Mathematical validity and academic integrity.

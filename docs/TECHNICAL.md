@@ -10,8 +10,10 @@ The project follows a modular architecture within `src/loterias`:
     * `rf_model.py`: Random Forest implementation.
     * `lstm_model.py`: Deep Learning (LSTM) implementation.
     * `monte_carlo.py`: Simulation based on statistical bounds.
+    * `xgboost_model.py`: Gradient Boosting implementation.
     * Other heuristic models (`frequency`, `gap`, etc.).
 * **`features.py`**: Centralized mathematical logic (Sum, Odd/Even, Spread).
+* **`ensemble_backtester.py`**: Orchestrator for Consensus Strategy (Tira-Teima).
 * **`analysis.py`**: Statistical reporting engine.
 * **Game Implementations**: `megasena.py`, `lotofacil.py`, `quina.py` inherit from `Lottery`.
 * **`utils.py`**: Helper functions for exporting data (JSON/CSV).
@@ -33,6 +35,7 @@ pip install -e .
 
 This installs dependencies (`pandas`, `requests`, `openpyxl`, `pytest`) and registers the `preloto` CLI command.
 * **Optional**: `tensorflow` is required for `--model lstm`.
+* **Optional**: `xgboost` is required for `--model xgb`.
 
 ### Testing
 
