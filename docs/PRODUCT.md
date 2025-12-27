@@ -25,6 +25,9 @@ Supports the major Brazilian lotteries:
 
 * **Random**: Pure chaos (baseline).
 * **Frequency**: Hot (most frequent) or Cold (least frequent) number strategies.
+* **Deep Learning (LSTM)**: Neural networks for sequence logic.
+* **Machine Learning (RF)**: Random Forests for context-aware patterns.
+* **Monte Carlo (MC)**: Simulation for statistical validation.
 
 ### 4. Machine-Readable Output
 

@@ -10,7 +10,7 @@ The **Preloto** project is a scientific exploration of probability and statistic
 
 ## Purpose of Models
 
-The models provided (`gap`, `surfing`, `frequency`) are **heuristics** designed to:
+The models provided (`gap`, `surfing`, `frequency`, `lstm`, `rf`, `mc`) are **heuristics** and **statistical tools** designed to:
 
 * Explore statistical variance in finite datasets.
 * Test hypotheses about non-uniformity in physical randomization devices (if any exist).
