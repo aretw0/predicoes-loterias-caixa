@@ -15,6 +15,7 @@ class LSTMModel(Model):
         self.tokenizer_num_words = range_max + 2 
         self.model = None
         self.window_size = 10 
+        self.units = 128
         # Feature vector size: (range_max + 1) + 4 extra features (Sum, Odd, Even, Spread)
         self.input_size = (self.range_max + 1) + 4
 
@@ -85,14 +86,32 @@ class LSTMModel(Model):
         # Input shape: (Window Size, Input Size)
         model = Sequential()
         model.add(Input(shape=(self.window_size, self.input_size)))
-        model.add(LSTM(128, return_sequences=False))
+        model.add(LSTM(self.units, return_sequences=False))
         model.add(Dense(self.range_max + 1, activation='sigmoid'))
         
         model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
         self.model = model
 
-    def train(self, data: pd.DataFrame, epochs: int = 50, batch_size: int = 32):
-        print(f"Training LSTM for {epochs} epochs...")
+    def train(self, data: pd.DataFrame, epochs: int = 50, batch_size: int = 32, **kwargs):
+        # Cast to int (CLI passes strings)
+        epochs = int(epochs)
+        batch_size = int(batch_size)
+        
+        # Hyperparameter Overrides
+        if 'window_size' in kwargs:
+            self.window_size = int(kwargs['window_size'])
+        if 'units' in kwargs:
+            self.units = int(kwargs['units'])
+            
+        # Re-build model if parameters changed (or first run)
+        # Note: If model already exists, rebuilding it resets weights. 
+        # For hyperparam tuning, this is desired.
+        if self.units != 128 or self.model is None: # Simple check, or just always rebuild if not trained?
+             # For safety, let's rebuild if not None but we want to be sure about units.
+             # Actually _build_model uses self.units.
+             self._build_model()
+
+        print(f"Training LSTM: epochs={epochs}, batch={batch_size}, window={self.window_size}, units={self.units}")
         X, y = self._prepare_sequences(data)
 
         # Store last window for prediction

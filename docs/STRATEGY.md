@@ -35,8 +35,15 @@ Agora pergunte aos modelos que tentam encontrar padrões sequenciais (o que o Mo
 
 ```bash
 # Pergunte à Rede Neural (foco em sequências recentes)
-preloto megasena --model lstm --epochs 100
+# Dica: 'epochs' define o tempo de treino. 'units' define a inteligência (padrão 128). 'window_size' o contexto (padrão 10).
+preloto megasena --model lstm --epochs 100 --model-args units:256 window_size:20
+```
 
+*   **Nota sobre Calibragem LSTM**:
+    *   **units**: 128 é bom. 256 é mais "inteligente" mas mais lento.
+    *   **window_size**: Quantos jogos passados ele olha? 10 é curto prazo. 20 é médio prazo. Tente variar.
+
+```bash
 # Pergunte à Random Forest (foco em contexto e regras de decisão)
 # Dica: Use n_estimators mais alto para maior precisão (padrão é 100)
 preloto megasena --model rf --model-args n_estimators:1000
