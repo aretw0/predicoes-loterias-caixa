@@ -3,6 +3,9 @@ from .base import ModelFactory, Lottery
 from typing import List, Dict, Any
 from .models import RandomForestModel, LSTMModel, MonteCarloModel, XGBoostModel
 from .features import calculate_sum, count_odds, count_evens, calculate_spread
+import tensorflow as tf
+import gc
+
 
 class EnsembleBacktester:
     def __init__(self, lottery: Lottery, range_min: int, range_max: int, draw_count: int, model_args: Dict[str, Any] = None):
@@ -125,5 +128,14 @@ class EnsembleBacktester:
                 print(f"Draw {i}: Target={list(target_numbers)}")
                 print(f"  > Hit Rates: MC={row_result['hits']['mc']}, RF={row_result['hits']['rf']}, XGB={row_result['hits']['xgb']}, LSTM={row_result['hits']['lstm']}")
                 print(f"  > Consensus: 4/4 hits {row_result['hits']['con_4']} (size {len(con_4)}), 3/4 hits {row_result['hits']['con_3']}")
+
+            # Cleanup to prevent OOM
+            if 'lstm' in locals(): del lstm
+            if 'rf' in locals(): del rf
+            if 'xgb_model' in locals(): del xgb_model
+            if 'mc' in locals(): del mc
+            
+            tf.keras.backend.clear_session()
+            gc.collect()
 
         return {'draws': len(results), 'details': results}
