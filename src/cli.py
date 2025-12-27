@@ -46,6 +46,9 @@ def main():
 
     # Analysis Arguments
     parser.add_argument('--analyze', action='store_true', help="Run statistical analysis on past draws instead of predicting.")
+    
+    # Ensemble Arguments
+    parser.add_argument('--ensemble', action='store_true', help="Use Ensemble Strategy for backtesting/prediction.")
 
     args = parser.parse_args()
     
@@ -86,9 +89,20 @@ def main():
     elif args.analyze:
         handle_analysis(args, lottery, game_config)
     elif args.backtest:
-        handle_backtest(args, lottery, game_config, model_args, quantity)
+        if args.ensemble:
+             handle_ensemble_backtest(args, lottery, game_config)
+        else:
+             handle_backtest(args, lottery, game_config, model_args, quantity)
     else:
         handle_prediction(args, lottery, game_config, model_args, quantity)
+
+def handle_ensemble_backtest(args, lottery, game_config):
+    from src.loterias.ensemble_backtester import EnsembleBacktester
+    
+    backtester = EnsembleBacktester(lottery, game_config['min'], game_config['max'], game_config['draw'])
+    results = backtester.run(draws_to_test=args.draws, verbose=args.verbose)
+    
+    print(json.dumps(results, indent=2, default=str))
 
 def handle_analysis(args, lottery, game_config):
     from src.loterias.analysis import Analyzer

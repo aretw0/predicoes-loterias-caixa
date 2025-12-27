@@ -56,19 +56,26 @@ preloto megasena --model rf --model-args n_estimators:1000
 
 O seu jogo final deve ser a intersecção desses mundos.
 
+Você pode rodar um "Tira-Teima do Passado" para ganhar confiança:
+```bash
+preloto megasena --backtest --ensemble --draws 10
+```
+
+Para gerar o jogo de hoje:
 1.  Pegue os números do **Monte Carlo** (Base sólida).
-2.  Veja quais deles TAMBÉM apareceram no **LSTM** ou **RF**.
-3.  Esses são seus **Números de Ouro**.
+2.  Cruze com **XGBoost** e **LSTM**.
+3.  Números que aparecem em **3 ou 4 modelos** são Ouro.
 
-### Exemplo Prático
+### Exemplo Prático (Atualizado)
 
-*   **MC diz**: 04, 10, 33, 41, 52, 58
-*   **LSTM diz**: 04, 15, 22, 33, 49, 60
-*   **RF diz**: 04, 05, 10, 33, 42, 55
+*   **MC**: 04, 10, 33, 41
+*   **LSTM**: 04, 15, 22, 33
+*   **RF**: 04, 05, 10, 33
+*   **XGB**: 04, 10, 33, 50
 
 **Conclusão**:
-*   **04 e 33**: Apareceram em TODOS. São obrigatórios.
-*   **10**: Apareceu em MC e RF. Forte candidato.
+*   **04 e 33**: Unanimidade (4/4). Jogue sem medo.
+*   **10**: Maioria (3/4). Forte.
 *   **Restante**: Preencha com sua intuição ou análise do passo 1.
 
 ---
