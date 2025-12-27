@@ -4,6 +4,7 @@ import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Embedding, Input
 from ..base import Model
+from ..features import calculate_sum, count_odds, count_evens, calculate_spread
 
 class LSTMModel(Model):
     def __init__(self, range_min: int, range_max: int, draw_count: int):
@@ -11,30 +12,19 @@ class LSTMModel(Model):
         self.range_min = range_min
         self.range_max = range_max
         self.draw_count = draw_count
-        self.tokenizer_num_words = range_max + 2  # +1 for 0-index (unused), +1 for padding if needed, safely cover max
+        self.tokenizer_num_words = range_max + 2 
         self.model = None
-        self.window_size = 10 # Number of past draws to look at
+        self.window_size = 10 
+        # Feature vector size: (range_max + 1) + 4 extra features (Sum, Odd, Even, Spread)
+        self.input_size = (self.range_max + 1) + 4
 
     def _prepare_sequences(self, data: pd.DataFrame):
-        # Extract all numbers as a single sequence of draws
-        # Assuming data columns are like 'bola1', 'bola2', ...
-        # reliable way: extract all numeric columns that look like balls
         ball_cols = [c for c in data.columns if 'bola' in c.lower() or 'dezenas' in c.lower()]
-        # Sort values to ensure deterministic order within a draw if needed, 
-        # but usually draws are given in ascending order.
         
         sequences = []
         targets = []
         
-        # Convert dataframe to a list of lists (draws)
         draws = data[ball_cols].values.tolist()
-        
-        # We need to flatten? No, LSTM for this usually takes a sequence of sets (draws) 
-        # or we treat it as a long sequence of numbers. 
-        # Better approach for lottery: Sequence of sets is hard. 
-        # Simplified approach: Treat each draw as a "word" is impossible because it is a set.
-        # Alternative: Multi-hot encoding for each draw?
-        # Let's try: Input = Sequence of last N draws (multi-hot encoded). Output = Next draw (multi-hot).
         
         X = []
         y = []
@@ -47,41 +37,54 @@ class LSTMModel(Model):
             window = draws[i : i + self.window_size]
             target = draws[i + self.window_size]
             
-            # Simple encoding: flattened or specialized? 
-            # Let's use simple flattened sequence for now if we use Embedding, 
-            # BUT Embedding expects single integers. 
-            # If we want to predict a SET, we typically use Multi-Label classification.
-            # Input: (Window Size, Draw Count) -> Flattened? 
-            # Reference concept: "See story of numbers".
-            
-            # Let's treat it as a time series of features.
-            # Feature vector for a draw: Multi-hot vector of size (range_max + 1)
-            
             X.append(self._draws_to_multihot(window))
-            y.append(self._draw_to_multihot(target))
+            y.append(self._draw_to_multihot(target, include_features=False)) # Target is just the numbers
             
         return np.array(X), np.array(y)
 
-    def _draw_to_multihot(self, draw):
+    def _draw_to_multihot(self, draw, include_features=True):
+        # Base vector: One-hot for numbers
         vec = np.zeros(self.range_max + 1)
+        valid_numbers = []
         for num in draw:
             try:
                 n = int(num)
                 if 0 <= n <= self.range_max:
                     vec[n] = 1.0
+                    valid_numbers.append(n)
             except:
                 pass
-        return vec
+        
+        if not include_features:
+            return vec
+
+        # Enrich with statistical features
+        # Normalize to 0-1 range roughly to help Neural Net
+        
+        # 1. Sum Normalize: Max possible sum approx RangeMax * DrawCount
+        max_sum_theoretical = self.range_max * self.draw_count
+        s = calculate_sum(valid_numbers) / max_sum_theoretical
+        
+        # 2. Odd Normalize: Max is DrawCount
+        o = count_odds(valid_numbers) / self.draw_count
+        
+        # 3. Even Normalize: Max is DrawCount
+        e = count_evens(valid_numbers) / self.draw_count
+        
+        # 4. Spread Normalize: Max is RangeMax
+        sp = calculate_spread(valid_numbers) / self.range_max
+        
+        # Append features
+        features = np.array([s, o, e, sp])
+        return np.concatenate([vec, features])
 
     def _draws_to_multihot(self, draws):
-        return np.array([self._draw_to_multihot(d) for d in draws])
+        return np.array([self._draw_to_multihot(d, include_features=True) for d in draws])
 
     def _build_model(self):
-        # Input shape: (Window Size, Max Number + 1)
-        # Output shape: (Max Number + 1) -> Sigmoid for multi-label
-        
+        # Input shape: (Window Size, Input Size)
         model = Sequential()
-        model.add(Input(shape=(self.window_size, self.range_max + 1)))
+        model.add(Input(shape=(self.window_size, self.input_size)))
         model.add(LSTM(128, return_sequences=False))
         model.add(Dense(self.range_max + 1, activation='sigmoid'))
         

@@ -9,8 +9,11 @@ The project follows a modular architecture within `src/loterias`:
 * **`models`**: Concrete implementations of prediction logic:
     * `rf_model.py`: Random Forest implementation.
     * `lstm_model.py`: Deep Learning (LSTM) implementation.
+    * `monte_carlo.py`: Simulation based on statistical bounds.
     * Other heuristic models (`frequency`, `gap`, etc.).
-* **Game Implementations**: `megasena.py`, `lotofacil.py`, `quina.py` inherit from `Lottery` to handle game-specific rules and data parsing.
+* **`features.py`**: Centralized mathematical logic (Sum, Odd/Even, Spread).
+* **`analysis.py`**: Statistical reporting engine.
+* **Game Implementations**: `megasena.py`, `lotofacil.py`, `quina.py` inherit from `Lottery`.
 * **`utils.py`**: Helper functions for exporting data (JSON/CSV).
 
 ## Development Setup

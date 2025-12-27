@@ -27,7 +27,7 @@ def main():
     parser.add_argument('game', type=str, choices=['megasena', 'lotofacil', 'quina'], help="The lottery game to predict for.")
     
     # Optional Arguments
-    parser.add_argument('--model', type=str, default='random', choices=['random', 'frequency', 'gap', 'surfing', 'hybrid', 'rf', 'lstm'], help="The prediction model to use (default: random).")
+    parser.add_argument('--model', type=str, default='random', choices=['random', 'frequency', 'gap', 'surfing', 'hybrid', 'rf', 'lstm', 'mc'], help="The prediction model to use (default: random).")
     parser.add_argument('--numbers', type=int, help="Quantity of numbers to play (defaults to max allowed).")
     parser.add_argument('--output', type=str, help="Output file for predictions (e.g., predictions.json or predictions.csv).")
     parser.add_argument('--model-args', nargs='*', help="Model arguments in key:value format (e.g., seed:42, order:asc).")
@@ -176,7 +176,7 @@ def handle_prediction(args, lottery, game_config, model_args, quantity):
         model = ModelFactory.create_model(args.model, game_config['min'], game_config['max'], game_config['draw'])
         
         # Train model if needed (Frequency, Gap, Surfing all need data)
-        # Train model if needed (Frequency, Gap, Surfing, LSTM all need data)
+        # Train model if needed (Frequency, Gap, Surfing, LSTM, MC all need data)
         if args.model != 'random':
              df = lottery.preprocess_data()
              if args.model == 'lstm':

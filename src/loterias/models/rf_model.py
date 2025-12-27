@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 from ..base import Model
+from ..features import calculate_sum, count_odds, count_evens, calculate_spread
 
 class RandomForestModel(Model):
     def __init__(self, range_min: int, range_max: int, draw_count: int):
@@ -42,16 +43,25 @@ class RandomForestModel(Model):
         # We skip the first 50 draws to build up history stats
         start_training_idx = 50
         
-        processed_data = [] # List of draws
+        # Context of *previous* draw (features)
+        # We need to store features of row i-1 to use for predicting row i
+        last_draw_features = [0, 0, 0, 0] # Sum, Odd, Even, Spread
         
         for i, row in data.iterrows():
-            drawn_numbers = set(row['dezenas'])
+            # Get current draw numbers
+            drawn_numbers = []
+            drawn_set = set(row['dezenas'])
+            for col in data.columns:
+                 if 'bola' in col or 'dezenas' in col:
+                     try:
+                         drawn_numbers.append(int(row[col]))
+                     except:
+                         pass
             
             # If we are past warm-up, we record this state as a training example
             if i >= start_training_idx:
-                # Capture state BEFORE knowing the result of this draw
-                # For efficiency, we might random sample negative examples?
-                # Or just put all ~60 examples per draw? (60 * 2000 = 120k rows, feasible)
+                # Features from global context (previous draw state)
+                ctx_sum, ctx_odd, ctx_even, ctx_spread = last_draw_features
                 
                 for n in range(self.range_min, self.range_max + 1):
                     # Features
@@ -59,18 +69,29 @@ class RandomForestModel(Model):
                     feat_freq = freq_total[n]
                     feat_freq10 = sum(freq_10[n][-10:])
                     
-                    X.append([feat_gap, feat_freq, feat_freq10])
-                    y.append(1 if n in drawn_numbers else 0)
+                    # Augmented Features: "What was the context when this number appeared/didn't appear?"
+                    # We are asking: Does High Sum yesterday affect Number 5 today?
+                    
+                    X.append([feat_gap, feat_freq, feat_freq10, ctx_sum, ctx_odd, ctx_even, ctx_spread])
+                    y.append(1 if n in drawn_set else 0)
             
             # Update stats AFTER the draw
             for n in range(self.range_min, self.range_max + 1):
-                if n in drawn_numbers:
+                if n in drawn_set:
                     current_gaps[n] = 0
                     freq_total[n] += 1
                     freq_10[n].append(1)
                 else:
                     current_gaps[n] += 1
                     freq_10[n].append(0)
+            
+            # Update last draw features for NEXT iteration
+            last_draw_features = [
+                calculate_sum(drawn_numbers),
+                count_odds(drawn_numbers),
+                count_evens(drawn_numbers),
+                calculate_spread(drawn_numbers)
+            ]
         
         if not X:
             print("Warning: Not enough data to train Random Forest.")
@@ -90,6 +111,7 @@ class RandomForestModel(Model):
         self.final_gaps = current_gaps
         self.final_freq = freq_total
         self.final_freq10 = freq_10
+        self.last_draw_features = last_draw_features
 
     def predict(self, count: int = None, **kwargs) -> list:
         if not self.trained:
@@ -101,12 +123,15 @@ class RandomForestModel(Model):
         X_next = []
         numbers = []
         
+        # Context is the features of the VERY LAST draw seen
+        ctx_sum, ctx_odd, ctx_even, ctx_spread = self.last_draw_features
+        
         for n in range(self.range_min, self.range_max + 1):
             feat_gap = self.final_gaps[n]
             feat_freq = self.final_freq[n]
             feat_freq10 = sum(self.final_freq10[n][-10:])
              
-            X_next.append([feat_gap, feat_freq, feat_freq10])
+            X_next.append([feat_gap, feat_freq, feat_freq10, ctx_sum, ctx_odd, ctx_even, ctx_spread])
             numbers.append(n)
             
         X_next_array = np.array(X_next)

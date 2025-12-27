@@ -5,3 +5,4 @@ from .surfing_model import SurfingModel
 from .hybrid_model import HybridModel
 from .rf_model import RandomForestModel
 from .lstm_model import LSTMModel
+from .monte_carlo import MonteCarloModel

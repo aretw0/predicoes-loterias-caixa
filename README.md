@@ -84,6 +84,20 @@ Train a neural network to find temporal patterns. Requires TensorFlow.
 preloto megasena --model lstm --epochs 100
 ```
 
+**Monte Carlo Simulation**:
+Simulate thousands of games and pick those that fit the statistical profile (Sum, Spread, Odds).
+
+```bash
+preloto megasena --model mc
+```
+
+**Analysis (Visibility)**:
+View the "shape" of the chaos directly.
+
+```bash
+preloto megasena --analyze
+```
+
 ### Run Tests
 
 ```bash
