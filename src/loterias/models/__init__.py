@@ -6,3 +6,16 @@ from .hybrid_model import HybridModel
 from .rf_model import RandomForestModel
 from .lstm_model import LSTMModel
 from .monte_carlo import MonteCarloModel
+from .xgboost_model import XGBoostModel
+
+__all__ = [
+    'RandomModel',
+    'FrequencyModel',
+    'GapModel',
+    'SurfingModel',
+    'HybridModel',
+    'RandomForestModel',
+    'LSTMModel',
+    'MonteCarloModel',
+    'XGBoostModel'
+]

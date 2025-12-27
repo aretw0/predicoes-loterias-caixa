@@ -6,3 +6,4 @@ scipy
 tabulate
 scikit-learn
 tensorflow[and-cuda]
+xgboost
