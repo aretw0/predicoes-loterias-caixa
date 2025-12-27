@@ -154,7 +154,12 @@ class LSTMModel(Model):
             prediction = self.model.predict(X_input)
             probs = prediction[0]
             
-            top_indices = probs.argsort()[-self.draw_count:][::-1]
+            final_count = kwargs.get('count', self.draw_count)
+            # Ensure final_count is int
+            if final_count is None: final_count = self.draw_count
+            final_count = int(final_count)
+
+            top_indices = probs.argsort()[-final_count:][::-1]
             return sorted([int(x) for x in top_indices])
         
         return []
