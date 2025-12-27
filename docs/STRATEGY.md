@@ -38,9 +38,11 @@ Agora pergunte aos modelos que tentam encontrar padrões sequenciais (o que o Mo
 preloto megasena --model lstm --epochs 100
 
 # Pergunte à Random Forest (foco em contexto e regras de decisão)
-preloto megasena --model rf
+# Dica: Use n_estimators mais alto para maior precisão (padrão é 100)
+preloto megasena --model rf --model-args n_estimators:1000
 ```
 
+*   **Nota sobre Calibragem RF**: `n_estimators:100` é rápido para testes. Para o "Tira-Teima" final, prefira **500** ou **1000**. Mais árvores = decisão mais estável (demora uns segundos a mais, mas vale a pena).
 *   *Anote esses números.* Eles são suas apostas em "tendências".
 
 ## 4. A Convergência (O Tira-Teima)

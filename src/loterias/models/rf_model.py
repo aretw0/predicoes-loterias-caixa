@@ -16,7 +16,17 @@ class RandomForestModel(Model):
         self.scaler = StandardScaler()
         self.trained = False
 
-    def train(self, data: pd.DataFrame):
+    def train(self, data: pd.DataFrame, **kwargs):
+        # Allow configuring n_estimators via model-args
+        if 'n_estimators' in kwargs:
+            try:
+                n = int(kwargs['n_estimators'])
+                self.model = RandomForestClassifier(n_estimators=n, random_state=42, n_jobs=-1)
+                import sys
+                print(f"Re-initialized Random Forest with {n} estimators.", file=sys.stderr)
+            except ValueError:
+                pass
+
         # We need to transform the time-series data into a supervised learning problem.
         # X: Features of previous draw state
         # y: Whether number N appeared in current draw

@@ -179,10 +179,13 @@ def handle_prediction(args, lottery, game_config, model_args, quantity):
         # Train model if needed (Frequency, Gap, Surfing, LSTM, MC all need data)
         if args.model != 'random':
              df = lottery.preprocess_data()
-             if args.model == 'lstm':
-                 model.train(df, epochs=args.epochs)
-             else:
-                 model.train(df)
+             
+             # Prepare training arguments
+             train_args = model_args.copy()
+             if args.model == 'lstm' and args.epochs:
+                 train_args['epochs'] = args.epochs
+                 
+             model.train(df, **train_args)
     except ValueError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
