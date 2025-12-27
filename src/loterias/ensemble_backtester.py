@@ -28,14 +28,17 @@ class EnsembleBacktester:
         results = []
         
         # Parse common model args or defaults
-        rf_estimators = int(self.model_args.get('n_estimators', 100))
+        # Priority: Specific (rf_n_estimators) > Generic (n_estimators) > Default (100)
+        rf_estimators = int(self.model_args.get('rf_n_estimators', self.model_args.get('n_estimators', 100)))
+        xgb_estimators = int(self.model_args.get('xgb_n_estimators', self.model_args.get('n_estimators', 100)))
+
         lstm_epochs = int(self.model_args.get('epochs', 10))
         lstm_units = int(self.model_args.get('units', 128))
         
         if verbose:
             print(f"Starting Ensemble Backtest on {self.lottery.name} for last {draws_to_test} draws...")
             print("Models: MC, RF, LSTM, XGB.")
-            print(f"Configuration: RF={rf_estimators} trees, LSTM={lstm_epochs} epochs.")
+            print(f"Configuration: RF={rf_estimators} trees, XGB={xgb_estimators} trees, LSTM={lstm_epochs} epochs.")
             print("Warning: This will perform full training for each step.")
 
         for i in range(start_index, total_draws):
@@ -63,8 +66,15 @@ class EnsembleBacktester:
             # 3. XGBoost
             try:
                 xgb_model = XGBoostModel(self.range_min, self.range_max, self.draw_count)
-                # Pass all model_args to XGBoost as it handles kwargs broadly
-                xgb_model.train(train_data, **self.model_args) 
+                
+                # Prepare XGB-specific args to avoid pollution
+                xgb_args = self.model_args.copy()
+                xgb_args['n_estimators'] = xgb_estimators
+                
+                # Filter out RF specific args if they exist to be clean
+                if 'rf_n_estimators' in xgb_args: del xgb_args['rf_n_estimators']
+                
+                xgb_model.train(train_data, **xgb_args) 
                 preds['xgb'] = set(xgb_model.predict())
             except: preds['xgb'] = set()
 
