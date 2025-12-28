@@ -65,7 +65,7 @@ class EnsembleBacktester:
             # 2. Random Forest
             try:
                 rf = RandomForestModel(self.range_min, self.range_max, self.draw_count)
-                rf.train(train_data, n_estimators=rf_estimators)
+                rf.train(train_data, n_estimators=rf_estimators, **self.model_args)
                 preds['rf'] = set(rf.predict())
             except Exception as e:
                 print(f"Error in RF: {e}", file=sys.stderr)
