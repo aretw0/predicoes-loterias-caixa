@@ -1,4 +1,5 @@
 import pandas as pd
+import sys
 from .base import ModelFactory, Lottery
 from typing import List, Dict, Any
 from .models import RandomForestModel, LSTMModel, MonteCarloModel, XGBoostModel
@@ -57,14 +58,18 @@ class EnsembleBacktester:
                 mc = MonteCarloModel(self.range_min, self.range_max, self.draw_count)
                 mc.train(train_data) 
                 preds['mc'] = set(mc.predict())
-            except: preds['mc'] = set()
+            except Exception as e:
+                print(f"Error in MC: {e}", file=sys.stderr)
+                preds['mc'] = set()
 
             # 2. Random Forest
             try:
                 rf = RandomForestModel(self.range_min, self.range_max, self.draw_count)
                 rf.train(train_data, n_estimators=rf_estimators)
                 preds['rf'] = set(rf.predict())
-            except: preds['rf'] = set()
+            except Exception as e:
+                print(f"Error in RF: {e}", file=sys.stderr)
+                preds['rf'] = set()
 
             # 3. XGBoost
             try:
@@ -79,14 +84,24 @@ class EnsembleBacktester:
                 
                 xgb_model.train(train_data, **xgb_args) 
                 preds['xgb'] = set(xgb_model.predict())
-            except: preds['xgb'] = set()
+            except Exception as e:
+                print(f"Error in XGB: {e}", file=sys.stderr)
+                preds['xgb'] = set()
 
             # 4. LSTM
             try:
                 lstm = LSTMModel(self.range_min, self.range_max, self.draw_count)
-                lstm.train(train_data, epochs=lstm_epochs, batch_size=32, verbose=0, units=lstm_units, **self.model_args) 
+                
+                # Prepare LSTM-specific args
+                lstm_args = self.model_args.copy()
+                if 'epochs' in lstm_args: del lstm_args['epochs']
+                if 'units' in lstm_args: del lstm_args['units']
+                
+                lstm.train(train_data, epochs=lstm_epochs, batch_size=32, verbose=0, units=lstm_units, **lstm_args) 
                 preds['lstm'] = set(lstm.predict())
-            except: preds['lstm'] = set()
+            except Exception as e:
+                print(f"Error in LSTM: {e}", file=sys.stderr)
+                preds['lstm'] = set()
 
             # Calculate Consensus
             all_votes = []
