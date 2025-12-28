@@ -22,7 +22,7 @@ O **Ensemble Strategy** roda todos os modelos simultaneamente e busca a intersec
 
 ```bash
 # Roda MC, RF, LSTM e XGBoost. Retorna o consenso.
-preloto megasena --backtest --ensemble --draws 10
+preloto megasena --ensemble --draws 10
 ```
 
 ### Como ler o resultado
