@@ -12,13 +12,13 @@ class RandomForestModel(Model):
         self.range_max = range_max
         self.draw_count = draw_count
         
-        self.model = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=1)
+        self.model = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1)
         self.scaler = StandardScaler()
         self.trained = False
 
     def train(self, data: pd.DataFrame, **kwargs):
         # Allow configuring n_estimators and n_jobs via model-args
-        n_jobs = int(kwargs.get('n_jobs', 1))
+        n_jobs = int(kwargs.get('n_jobs', -1))
         
         if 'n_estimators' in kwargs:
             try:

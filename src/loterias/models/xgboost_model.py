@@ -19,7 +19,7 @@ class XGBoostModel(Model):
             learning_rate=0.1, 
             max_depth=5, 
             random_state=42,
-            n_jobs=1,
+            n_jobs=-1,
             eval_metric='logloss'
         )
         self.scaler = StandardScaler()
