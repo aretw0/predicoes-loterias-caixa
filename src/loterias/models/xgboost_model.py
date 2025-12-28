@@ -19,7 +19,8 @@ class XGBoostModel(Model):
             learning_rate=0.1, 
             max_depth=5, 
             random_state=42, 
-            n_jobs=-1,
+            random_state=42, 
+            n_jobs=1,
             eval_metric='logloss'
         )
         self.scaler = StandardScaler()
@@ -37,10 +38,15 @@ class XGBoostModel(Model):
                 self.model.set_params(learning_rate=float(kwargs['learning_rate']))
              except ValueError: pass
             
-        if 'max_depth' in kwargs:
              try:
                 self.model.set_params(max_depth=int(kwargs['max_depth']))
              except ValueError: pass
+
+        if 'n_jobs' in kwargs:
+             try:
+                self.model.set_params(n_jobs=int(kwargs['n_jobs']))
+             except ValueError: pass
+
 
         # Feature Engineering (Identical to Random Forest)
         X = []
