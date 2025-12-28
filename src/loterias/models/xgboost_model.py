@@ -18,8 +18,7 @@ class XGBoostModel(Model):
             n_estimators=100, 
             learning_rate=0.1, 
             max_depth=5, 
-            random_state=42, 
-            random_state=42, 
+            random_state=42,
             n_jobs=1,
             eval_metric='logloss'
         )
