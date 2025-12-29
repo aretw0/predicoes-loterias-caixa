@@ -47,21 +47,34 @@ We use Semantic Versioning (SemVer).
 * [x] **Ensemble Prediction**: `EnsemblePredictor` for future draws (CLI `--predict`).
 * [x] **Weight Optimization**: Genetic Algorithm for Hybrid Model weights (Partial "Hyperparameter Tuning").
 
-### v0.6.0 - State of the Art & Chaos Engineering (Current)
+### v0.6.0 - Models & Persistence (Priority)
 
-**Goal**: Push the limits of prediction with Transformers, Chaos Theory, and Grokking.
+**Goal**: Establish state-of-the-art models and the ability to save work (Snapshots).
 
-* [ ] **Advanced Models**:
-  * **CatBoost**: Better handling of categorical data / decision trees.
-  * **Transformer (Attention)**: Move beyond LSTM sequences to attention mechanisms.
-  * **AutoEncoders**: Anomaly detection to filter "statistically trash" games.
-* [ ] **Strategy & Monitoring**:
-  * **Model Snapshots**: Ability to save/load trained states (`.pkl` / `.h5`).
-  * **Grokking Detection**: Monitoring loss curves for "sudden generalization".
-  * **Meta-Learning (Stacking)**: A superior model that learns *which* sub-model (RF, MC, etc.) to trust based on recent performance.
-* [ ] **Chaos Engineering**:
-  * **Max Numbers**: Support for high-cost system bets (e.g., 20 numbers) by respecting the `--numbers` CLI argument in Ensemble mode.
-  * **Feature Engineering V2**: Escaping the "statistical trash".
+* [ ] **Optimization**:
+  * Fix TensorFlow function retracing (Performance).
+  * Support `--numbers` CLI argument for System Bets (max numbers).
+* [ ] **New Models**:
+  * **CatBoost**: Best-in-class for tabular data.
+  * **Transformer (Attention)**: Context-aware sequence prediction.
+* [ ] **Persistence**:
+  * **Model Snapshots**: Save/Load trained models (`.pkl` / `.h5`) to avoid retraining.
+
+### v0.7.0 - The Judge (Meta-Learning)
+
+**Goal**: Build the "Trust System" to weigh model opinions dynamically.
+
+* [ ] **Prediction Ledger**: Persistent database tracking every guess.
+* [ ] **Meta-Learning (Stacking)**: The "Judge" model that learns from the Ledger.
+* [ ] **Grokking Detection**: Monitoring loss curves for "sudden generalization".
+
+### v0.8.0 - Simulation & Chaos
+
+**Goal**: Financial simulation and filtering statistical "trash".
+
+* [ ] **Portfolio Simulator**: Track "Virtual P&L" (Profit & Loss) for different strategies (e.g., 6 vs 20 numbers).
+* [ ] **AutoEncoders**: Anomaly detection to filter bad games.
+* [ ] **Feature Engineering V2**: Deeper chaos features.
 
 ## Future Ideas
 
