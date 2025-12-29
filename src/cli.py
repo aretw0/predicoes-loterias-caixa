@@ -31,7 +31,7 @@ def main():
     parser.add_argument('--numbers', type=int, help="Quantity of numbers to play (defaults to max allowed).")
     parser.add_argument('--output', type=str, help="Output file for predictions (e.g., predictions.json or predictions.csv).")
     parser.add_argument('--model-args', nargs='*', help="Model arguments in key:value format (e.g., seed:42, order:asc).")
-    parser.add_argument('--backtest', action='store_true', help="Run backtesting simulation.")
+    parser.add_argument('--backtest', action='store_true', help="Run backtesting simulation (required for ensemble backtest).")
     parser.add_argument('--draws', type=int, default=100, help="Number of past draws to backtest (default: 100).")
     parser.add_argument('--verbose', action='store_true', help="Show detailed output for every draw in backtest.")
     parser.add_argument('--filters', type=str, help="Statistical filters (e.g. 'sum:100-200,odd:3').")
@@ -39,7 +39,7 @@ def main():
     # Deep Learning Arguments
     parser.add_argument('--epochs', type=int, default=50, help="Number of epochs for training Deep Learning models (default: 50).")
     
-    # Optimization Arguments
+    # Optimization Arguments (Legacy/Cleanup candidate, keeping for now)
     parser.add_argument('--optimize', action='store_true', help="Run Genetic Optimization to find best model weights.")
     parser.add_argument('--generations', type=int, default=5, help="Number of generations for optimization (default: 5).")
     parser.add_argument('--population', type=int, default=10, help="Population size for optimization (default: 10).")
@@ -48,8 +48,8 @@ def main():
     parser.add_argument('--analyze', action='store_true', help="Run statistical analysis on past draws instead of predicting.")
     
     # Ensemble Arguments
-    parser.add_argument('--ensemble', action='store_true', help="Use Ensemble Strategy for backtesting/prediction.")
-    parser.add_argument('--predict', action='store_true', help="When used with --ensemble, generates future prediction instead of backtesting.")
+    parser.add_argument('--ensemble', action='store_true', help="Use Ensemble Strategy (default: prediction, use --backtest for simulation).")
+    parser.add_argument('--predict', action='store_true', help="DEPRECATED: Use --ensemble without arguments for prediction.")
 
     args = parser.parse_args()
     
@@ -94,10 +94,11 @@ def main():
     elif args.analyze:
         handle_analysis(args, lottery, game_config)
     elif args.ensemble:
-         if args.predict:
-             handle_ensemble_prediction(args, lottery, game_config, model_args)
-         else:
+         # NEW LOGIC: Default to prediction, Backtest only if explicitly requested
+         if args.backtest:
              handle_ensemble_backtest(args, lottery, game_config, model_args)
+         else:
+             handle_ensemble_prediction(args, lottery, game_config, model_args)
     elif args.backtest:
          handle_backtest(args, lottery, game_config, model_args, quantity)
     else:
