@@ -49,6 +49,7 @@ def main():
     
     # Ensemble Arguments
     parser.add_argument('--ensemble', action='store_true', help="Use Ensemble Strategy for backtesting/prediction.")
+    parser.add_argument('--predict', action='store_true', help="When used with --ensemble, generates future prediction instead of backtesting.")
 
     args = parser.parse_args()
     
@@ -93,7 +94,10 @@ def main():
     elif args.analyze:
         handle_analysis(args, lottery, game_config)
     elif args.ensemble:
-         handle_ensemble_backtest(args, lottery, game_config, model_args)
+         if args.predict:
+             handle_ensemble_prediction(args, lottery, game_config, model_args)
+         else:
+             handle_ensemble_backtest(args, lottery, game_config, model_args)
     elif args.backtest:
          handle_backtest(args, lottery, game_config, model_args, quantity)
     else:
@@ -112,6 +116,20 @@ def handle_ensemble_backtest(args, lottery, game_config, model_args):
     results = backtester.run(draws_to_test=args.draws, verbose=args.verbose)
     
     print(json.dumps(results, indent=2, default=str))
+
+def handle_ensemble_prediction(args, lottery, game_config, model_args):
+    from src.loterias.ensemble_predictor import EnsemblePredictor
+    
+    predictor = EnsemblePredictor(
+        lottery, 
+        game_config['min'], 
+        game_config['max'], 
+        game_config['draw'], 
+        model_args=model_args
+    )
+    result = predictor.predict_next()
+    
+    print(json.dumps(result, indent=2, default=str))
 
 def handle_analysis(args, lottery, game_config):
     from src.loterias.analysis import Analyzer
