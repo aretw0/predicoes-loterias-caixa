@@ -58,6 +58,7 @@ We use Semantic Versioning (SemVer).
 * [ ] **Strategy & Monitoring**:
   * **Model Snapshots**: Ability to save/load trained states (`.pkl` / `.h5`).
   * **Grokking Detection**: Monitoring loss curves for "sudden generalization".
+  * **Meta-Learning (Stacking)**: A superior model that learns *which* sub-model (RF, MC, etc.) to trust based on recent performance.
 * [ ] **Chaos Engineering**:
   * **Max Numbers**: Support for high-cost system bets (e.g., 20 numbers) by respecting the `--numbers` CLI argument in Ensemble mode.
   * **Feature Engineering V2**: Escaping the "statistical trash".
