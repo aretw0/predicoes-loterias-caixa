@@ -43,7 +43,28 @@ class EnsembleBacktester:
             print(f"Starting Ensemble Backtest on {self.lottery.name} for last {draws_to_test} draws...")
             print("Models: MC, RF, LSTM, XGB.")
             print(f"Configuration: RF={rf_estimators} trees, XGB={xgb_estimators} trees, LSTM={lstm_epochs} epochs.")
-            print("Warning: This will perform full training for each step.")
+            print("Mode: Online Learning (Models update sequentially).")
+
+        # Initialize models ONCE (optimization)
+        try:
+            mc = MonteCarloModel(self.range_min, self.range_max, self.draw_count)
+            rf = RandomForestModel(self.range_min, self.range_max, self.draw_count)
+            
+            # XGB Setup
+            xgb_model = XGBoostModel(self.range_min, self.range_max, self.draw_count)
+            xgb_args = self.model_args.copy()
+            xgb_args['n_estimators'] = xgb_estimators
+            if 'rf_n_estimators' in xgb_args: del xgb_args['rf_n_estimators']
+            
+            # LSTM Setup
+            lstm = LSTMModel(self.range_min, self.range_max, self.draw_count)
+            lstm_args = self.model_args.copy()
+            if 'epochs' in lstm_args: del lstm_args['epochs']
+            if 'units' in lstm_args: del lstm_args['units']
+            
+        except Exception as e:
+            print(f"Critical Error initializing models: {e}", file=sys.stderr)
+            return {}
 
         for i in range(start_index, total_draws):
             train_data = df.iloc[:i].copy()
@@ -55,7 +76,6 @@ class EnsembleBacktester:
             
             # 1. Monte Carlo
             try:
-                mc = MonteCarloModel(self.range_min, self.range_max, self.draw_count)
                 mc.train(train_data) 
                 preds['mc'] = set(mc.predict())
             except Exception as e:
@@ -64,7 +84,7 @@ class EnsembleBacktester:
 
             # 2. Random Forest
             try:
-                rf = RandomForestModel(self.range_min, self.range_max, self.draw_count)
+                # Online update is handled by sklearn/rf_model logic (usually refits)
                 rf.train(train_data, n_estimators=rf_estimators, **self.model_args)
                 preds['rf'] = set(rf.predict())
             except Exception as e:
@@ -73,30 +93,16 @@ class EnsembleBacktester:
 
             # 3. XGBoost
             try:
-                xgb_model = XGBoostModel(self.range_min, self.range_max, self.draw_count)
-                
-                # Prepare XGB-specific args to avoid pollution
-                xgb_args = self.model_args.copy()
-                xgb_args['n_estimators'] = xgb_estimators
-                
-                # Filter out RF specific args if they exist to be clean
-                if 'rf_n_estimators' in xgb_args: del xgb_args['rf_n_estimators']
-                
                 xgb_model.train(train_data, **xgb_args) 
                 preds['xgb'] = set(xgb_model.predict())
             except Exception as e:
                 print(f"Error in XGB: {e}", file=sys.stderr)
                 preds['xgb'] = set()
 
-            # 4. LSTM
+            # 4. LSTM (Deep Learning)
             try:
-                lstm = LSTMModel(self.range_min, self.range_max, self.draw_count)
-                
-                # Prepare LSTM-specific args
-                lstm_args = self.model_args.copy()
-                if 'epochs' in lstm_args: del lstm_args['epochs']
-                if 'units' in lstm_args: del lstm_args['units']
-                
+                # Online Learning: Reuse model, fit only on new data (or retrain if logic dictates)
+                # Note: LSTMModel.train implementation should handle re-entry
                 lstm.train(train_data, epochs=lstm_epochs, batch_size=32, verbose=0, units=lstm_units, **lstm_args) 
                 preds['lstm'] = set(lstm.predict())
             except Exception as e:
@@ -140,17 +146,12 @@ class EnsembleBacktester:
             results.append(row_result)
             
             if verbose:
-                print(f"Draw {i}: Target={list(target_numbers)}")
-                print(f"  > Hit Rates: MC={row_result['hits']['mc']}, RF={row_result['hits']['rf']}, XGB={row_result['hits']['xgb']}, LSTM={row_result['hits']['lstm']}")
-                print(f"  > Consensus: 4/4 hits {row_result['hits']['con_4']} (size {len(con_4)}), 3/4 hits {row_result['hits']['con_3']}")
+                # Simplified output for brevity
+                print(f"Draw {i} | Consensus(3+): {len(con_3)} hits: {len(con_3.intersection(target_numbers))}")
 
-            # Cleanup to prevent OOM
-            if 'lstm' in locals(): del lstm
-            if 'rf' in locals(): del rf
-            if 'xgb_model' in locals(): del xgb_model
-            if 'mc' in locals(): del mc
-            
-            tf.keras.backend.clear_session()
-            gc.collect()
+        # Cleanup at the END of backtest, not every loop
+        del lstm, rf, xgb_model, mc
+        tf.keras.backend.clear_session()
+        gc.collect()
 
         return {'draws': len(results), 'details': results}
