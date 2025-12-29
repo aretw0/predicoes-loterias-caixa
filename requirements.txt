@@ -7,3 +7,5 @@ tabulate
 scikit-learn
 tensorflow[and-cuda]
 xgboost
+catboost
+lightgbm

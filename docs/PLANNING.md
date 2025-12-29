@@ -38,13 +38,29 @@ We use Semantic Versioning (SemVer).
 * [x] **Feature Engineering**: Enrich models with structural features.
 * [x] **Simulation**: Implement **Monte Carlo** simulation.
 
-### v0.5.0 - Consensus & High Performance (Current)
+### v0.5.0 - Consensus & High Performance (Completed)
 
 **Goal**: Validate the "Tira-Teima" and optimize for deeper insights.
 
-* [ ] **Ensemble Backtesting**: Validate intersection strategies.
-* [ ] **XGBoost**: Gradient Boosting for high-performance decision trees.
-* [ ] **Hyperparameter Tuning**: Automated search for best `units`/`trees`.
+* [x] **Ensemble Backtesting**: Validate intersection strategies (Implemented via `EnsembleBacktester`).
+* [x] **XGBoost**: Gradient Boosting for high-performance decision trees.
+* [x] **Ensemble Prediction**: `EnsemblePredictor` for future draws (CLI `--predict`).
+* [x] **Weight Optimization**: Genetic Algorithm for Hybrid Model weights (Partial "Hyperparameter Tuning").
+
+### v0.6.0 - State of the Art & Chaos Engineering (Current)
+
+**Goal**: Push the limits of prediction with Transformers, Chaos Theory, and Grokking.
+
+* [ ] **Advanced Models**:
+  * **CatBoost**: Better handling of categorical data / decision trees.
+  * **Transformer (Attention)**: Move beyond LSTM sequences to attention mechanisms.
+  * **AutoEncoders**: Anomaly detection to filter "statistically trash" games.
+* [ ] **Strategy & Monitoring**:
+  * **Model Snapshots**: Ability to save/load trained states (`.pkl` / `.h5`).
+  * **Grokking Detection**: Monitoring loss curves for "sudden generalization".
+* [ ] **Chaos Engineering**:
+  * **Max Numbers**: Support for high-cost system bets (e.g., 20 numbers) by respecting the `--numbers` CLI argument in Ensemble mode.
+  * **Feature Engineering V2**: Escaping the "statistical trash".
 
 ## Future Ideas
 
