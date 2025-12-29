@@ -40,7 +40,7 @@ def main():
     parser.add_argument('--epochs', type=int, default=50, help="Number of epochs for training Deep Learning models (default: 50).")
     
     # Optimization Arguments (Legacy/Cleanup candidate, keeping for now)
-    parser.add_argument('--optimize', action='store_true', help="Run Genetic Optimization to find best model weights.")
+    parser.add_argument('--optimize', action='store_true', help="Run Genetic Optimization to find best weights for Hybrid heuristic models (Frequency, Gap, Surfing).")
     parser.add_argument('--generations', type=int, default=5, help="Number of generations for optimization (default: 5).")
     parser.add_argument('--population', type=int, default=10, help="Population size for optimization (default: 10).")
 

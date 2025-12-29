@@ -65,6 +65,8 @@ We use Semantic Versioning (SemVer).
 **Goal**: Build the "Trust System" to weigh model opinions dynamically.
 
 * [ ] **Prediction Ledger**: Persistent database tracking every guess.
+* [ ] **Heuristic Canaries**: Integrate stateless models (Gap, Freq, Surf) into the Ledger to serve as baseline benchmarks.
+* [ ] **Kinetic Analytics**: Data Observability dashboard tracking feature *movement* (Gap Derivatives, Heat Flow) rather than just static stats.
 * [ ] **Meta-Learning (Stacking)**: The "Judge" model that learns from the Ledger.
 * [ ] **Grokking Detection**: Monitoring loss curves for "sudden generalization".
 
