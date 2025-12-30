@@ -9,6 +9,7 @@ from .monte_carlo import MonteCarloModel
 from .xgboost_model import XGBoostModel
 from .catboost_model import CatBoostModel
 from .transformer_model import TransformerModel
+from .autoencoder_model import AutoEncoderModel
 
 __all__ = [
     'RandomModel',
@@ -22,5 +23,6 @@ __all__ = [
     'MonteCarloModel',
     'XGBoostModel',
     'CatBoostModel',
-    'TransformerModel'
+    'TransformerModel',
+    'AutoEncoderModel'
 ]

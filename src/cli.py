@@ -54,6 +54,10 @@ def main():
     # Snapshot Arguments
     parser.add_argument('--save-model', type=str, help="Save the trained model to the specified path.")
     parser.add_argument('--load-model', type=str, help="Load a pre-trained model from the specified path (skips training).")
+    
+    # Anomaly Detection Arguments
+    parser.add_argument('--validator-model', type=str, help="Path to an AutoEncoder model to validate and filter predictions.")
+    parser.add_argument('--anomaly-threshold', type=float, default=0.1, help="Max anomaly score for a prediction to be accepted (default: 0.1).")
 
     args = parser.parse_args()
     
@@ -255,6 +259,22 @@ def handle_prediction(args, lottery, game_config, model_args, quantity):
     # Initialize Filters
     from src.loterias.filters import PredictionFilter
     prediction_filter = PredictionFilter(args.filters) if args.filters else None
+    
+    # Initialize Validator
+    validator = None
+    if args.validator_model:
+        try:
+            # We assume the validator is an AutoEncoder, but we can load it generically via ModelFactory if we knew the type.
+            # However, ModelFactory needs type name. Since we just have a path, we should assume it's an AutoEncoder 
+            # or try to infer. For v0.6.0, let's enforce it must be an AutoEncoder loadable by AutoEncoderModel.
+            # Or better: Create an empty AutoEncoderModel and load weights.
+            from src.loterias.models.autoencoder_model import AutoEncoderModel
+            validator = AutoEncoderModel(game_config['min'], game_config['max'], game_config['draw'])
+            print(f"Loading validator from {args.validator_model}...", file=sys.stderr)
+            validator.load(args.validator_model)
+        except Exception as e:
+            print(f"Error loading validator: {e}", file=sys.stderr)
+            sys.exit(1)
 
     # Calculate Costs
     price_per_bet = lottery.get_price(quantity)
@@ -271,20 +291,30 @@ def handle_prediction(args, lottery, game_config, model_args, quantity):
     max_retries = 1000
     prediction = []
     
-    for _ in range(max_retries):
+    for attempt in range(max_retries):
         temp_prediction = model.predict(count=quantity, **model_args)
         
+        # 1. Check Statistical Filters
         if prediction_filter:
-            if prediction_filter.validate(temp_prediction):
-                prediction = temp_prediction
-                break
-            # If not valid, loop continues (reject)
-        else:
-            prediction = temp_prediction
-            break
+            if not prediction_filter.validate(temp_prediction):
+                continue
+        
+        # 2. Check Anomaly Validator
+        if validator:
+            score = validator.validate(temp_prediction)
+            if score > args.anomaly_threshold:
+                # Too anomalous
+                continue
+                
+        # If passed all checks
+        prediction = temp_prediction
+        break
     else:
         # Loop finished without break -> Retries exhausted
-        print(f"Error: Could not generate a prediction satisfying filters '{args.filters}' after {max_retries} retries.", file=sys.stderr)
+        msg = f"Error: Could not generate a prediction satisfying constraints after {max_retries} retries."
+        if args.filters: msg += f" Filters: '{args.filters}'."
+        if validator: msg += f" Anomaly Threshold: {args.anomaly_threshold}."
+        print(msg, file=sys.stderr)
         sys.exit(1)
     
     result = {
