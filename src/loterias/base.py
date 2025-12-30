@@ -62,6 +62,25 @@ class Model(ABC):
         """Generates a prediction."""
         pass
 
+    def save(self, path: str):
+        """Saves the model to disk. Default implementation uses pickle."""
+        import pickle
+        try:
+            with open(path, 'wb') as f:
+                pickle.dump(self, f)
+        except Exception as e:
+            print(f"Error saving model {self.name}: {e}")
+
+    def load(self, path: str):
+        """Loads the model from disk. Default implementation uses pickle."""
+        import pickle
+        try:
+            with open(path, 'rb') as f:
+                loaded = pickle.load(f)
+                self.__dict__.update(loaded.__dict__)
+        except Exception as e:
+            print(f"Error loading model {self.name}: {e}")
+
 class ModelFactory:
     """Factory for creating prediction models."""
     

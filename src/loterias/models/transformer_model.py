@@ -183,3 +183,37 @@ class TransformerModel(Model):
             return sorted([int(x) for x in top_indices])
         
         return []
+
+    def save(self, path: str):
+        import pickle
+        # Keras models can be saved to H5 or Keras format
+        keras_path = path + ".keras"
+        
+        if self.model:
+            self.model.save(keras_path)
+            
+        temp_model = self.model
+        self.model = None
+        
+        try:
+             with open(path, 'wb') as f:
+                pickle.dump(self, f)
+        finally:
+            self.model = temp_model
+
+    def load(self, path: str):
+        import pickle
+        from tensorflow.keras.models import load_model
+        import os
+        
+        keras_path = path + ".keras"
+        
+        with open(path, 'rb') as f:
+            loaded = pickle.load(f)
+            self.__dict__.update(loaded.__dict__)
+            
+        if os.path.exists(keras_path):
+            self.model = load_model(keras_path)
+            # Compile logic is usually embedded in save/load for keras
+        else:
+             print(f"Warning: Keras model {keras_path} not found.")

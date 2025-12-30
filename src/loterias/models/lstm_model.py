@@ -144,7 +144,7 @@ class LSTMModel(Model):
                 current_window = draws[-self.window_size:]
         elif hasattr(self, 'last_window') and self.last_window is not None:
              current_window = self.last_window
-
+        
         if current_window:
             X_input = np.array([self._draws_to_multihot(current_window)])
             
@@ -163,3 +163,35 @@ class LSTMModel(Model):
             return sorted([int(x) for x in top_indices])
         
         return []
+
+    def save(self, path: str):
+        import pickle
+        keras_path = path + ".keras"
+        
+        if self.model:
+            self.model.save(keras_path)
+            
+        temp_model = self.model
+        self.model = None 
+        
+        try:
+             with open(path, 'wb') as f:
+                pickle.dump(self, f)
+        finally:
+            self.model = temp_model
+
+    def load(self, path: str):
+        import pickle
+        from tensorflow.keras.models import load_model
+        import os
+        
+        keras_path = path + ".keras"
+        
+        with open(path, 'rb') as f:
+            loaded = pickle.load(f)
+            self.__dict__.update(loaded.__dict__)
+            
+        if os.path.exists(keras_path):
+            self.model = load_model(keras_path)
+        else:
+             print(f"Warning: Keras model {keras_path} not found.")

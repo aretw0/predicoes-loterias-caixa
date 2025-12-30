@@ -51,6 +51,10 @@ def main():
     parser.add_argument('--ensemble', action='store_true', help="Use Ensemble Strategy (default: prediction, use --backtest for simulation).")
     parser.add_argument('--predict', action='store_true', help="DEPRECATED: Use --ensemble without arguments for prediction.")
 
+    # Snapshot Arguments
+    parser.add_argument('--save-model', type=str, help="Save the trained model to the specified path.")
+    parser.add_argument('--load-model', type=str, help="Load a pre-trained model from the specified path (skips training).")
+
     args = parser.parse_args()
     
     # Configuration and Defaults
@@ -217,17 +221,33 @@ def handle_prediction(args, lottery, game_config, model_args, quantity):
     try:
         model = ModelFactory.create_model(args.model, game_config['min'], game_config['max'], game_config['draw'])
         
-        # Train model if needed (Frequency, Gap, Surfing all need data)
-        # Train model if needed (Frequency, Gap, Surfing, LSTM, MC all need data)
-        if args.model != 'random':
-             df = lottery.preprocess_data()
-             
-             # Prepare training arguments
-             train_args = model_args.copy()
-             if args.model == 'lstm' and args.epochs:
-                 train_args['epochs'] = args.epochs
+        # Check if loading from file
+        if args.load_model:
+            import os
+            if os.path.exists(args.load_model) or os.path.exists(args.load_model + ".keras") or os.path.exists(args.load_model + ".cbm"):
+                # Append extension check logic inside load if needed, but simple check here is good UX
+                print(f"Loading model from {args.load_model}...", file=sys.stderr)
+                model.load(args.load_model)
+            else:
+                 print(f"Error: Model file {args.load_model} not found.", file=sys.stderr)
+                 sys.exit(1)
+        else:
+            # Train model if needed (Frequency, Gap, Surfing, LSTM, MC all need data)
+            if args.model != 'random':
+                 df = lottery.preprocess_data()
                  
-             model.train(df, **train_args)
+                 # Prepare training arguments
+                 train_args = model_args.copy()
+                 if args.model == 'lstm' and args.epochs:
+                     train_args['epochs'] = args.epochs
+                     
+                 model.train(df, **train_args)
+                 
+                 # Save if requested
+                 if args.save_model:
+                     print(f"Saving model to {args.save_model}...", file=sys.stderr)
+                     model.save(args.save_model)
+                     
     except ValueError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)

@@ -155,3 +155,56 @@ class CatBoostModel(Model):
         
         prediction = sorted_df.head(final_count)['dezenas'].tolist()
         return sorted(prediction)
+
+    def save(self, path: str):
+        # Save CatBoost model file separately, but pickling the wrapper for other attributes (scaler, etc) is tricky 
+        # because the internal model obj might not be pickleable consistently across versions? 
+        # Actually CatBoost IS pickleable.
+        # But let's use cbm format for the core model + pickle for the wrapper (without the C++ model).
+        import pickle
+        
+        core_path = path + ".cbm"
+        self.model.save_model(core_path)
+        
+        # Determine attributes to save via pickle (minus the model)
+        # We can't pickle the exact same logic easily without complicating load.
+        # Simpler: Pickle the whole object but handle fail?
+        # CatBoost docs say it supports pickling.
+        # Let's try default base.save first? 
+        # CatBoostClassifier IS picklable. 
+        # But we want robust file format .cbm?
+        # Let's override to use .save_model() for safety and portability.
+        
+        temp_model = self.model
+        self.model = None # Detach
+        
+        try:
+            # Save wrapper state
+            with open(path, 'wb') as f:
+                pickle.dump(self, f)
+            
+            # Restore and save core
+            self.model = temp_model
+            self.model.save_model(core_path)
+            
+        except Exception as e:
+            self.model = temp_model # Restore on fail
+            raise e
+
+    def load(self, path: str):
+        import pickle
+        import os
+        
+        core_path = path + ".cbm"
+        
+        # Load wrapper
+        with open(path, 'rb') as f:
+            loaded = pickle.load(f)
+            self.__dict__.update(loaded.__dict__)
+            
+        # Load core
+        if os.path.exists(core_path):
+            self.model = cb.CatBoostClassifier() # Re-init empty
+            self.model.load_model(core_path)
+        else:
+            print(f"Warning: Core model {core_path} not found.")
