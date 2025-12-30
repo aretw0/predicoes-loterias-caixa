@@ -67,7 +67,7 @@ class ModelFactory:
     
     @staticmethod
     def create_model(model_type: str, range_min: int, range_max: int, draw_count: int) -> Model:
-        from .models import RandomModel, FrequencyModel, GapModel, SurfingModel, HybridModel, RandomForestModel, LSTMModel, MonteCarloModel, XGBoostModel
+        from .models import RandomModel, FrequencyModel, GapModel, SurfingModel, HybridModel, RandomForestModel, LSTMModel, MonteCarloModel, XGBoostModel, CatBoostModel, TransformerModel
         
         if model_type == 'random':
             return RandomModel(range_min, range_max, draw_count)
@@ -87,5 +87,9 @@ class ModelFactory:
             return MonteCarloModel(range_min, range_max, draw_count)
         elif model_type == 'xgb':
             return XGBoostModel(range_min, range_max, draw_count)
+        elif model_type == 'catboost':
+            return CatBoostModel(range_min, range_max, draw_count)
+        elif model_type == 'transformer':
+            return TransformerModel(range_min, range_max, draw_count)
         else:
             raise ValueError(f"Unknown model type: {model_type}")

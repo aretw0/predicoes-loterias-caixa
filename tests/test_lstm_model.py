@@ -33,8 +33,8 @@ def test_data_preparation(mock_data):
     assert len(X) == 15
     assert len(y) == 15
     
-    # X shape: (15, 5, 11) -> 11 because range_max=10 (index 0-10)
-    assert X.shape == (15, 5, 11)
+    # X shape: (15, 5, 15) -> 11 one-hot + 4 features
+    assert X.shape == (15, 5, 15)
     # y shape: (15, 11)
     assert y.shape == (15, 11)
 

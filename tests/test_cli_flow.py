@@ -33,7 +33,8 @@ class TestCLIFlow(unittest.TestCase):
         data = json.loads(result.stdout)
         self.assertEqual(data['game'], "megasena")
         self.assertEqual(data['model'], "frequency")
-        self.assertEqual(data['parameters'], {"order": "asc"})
+        # CLI injects 'epochs' by default (from args.epochs=50)
+        self.assertEqual(data['parameters'], {"order": "asc", "epochs": 50})
 
 if __name__ == '__main__':
     unittest.main()

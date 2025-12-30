@@ -9,7 +9,7 @@ class FrequencyModel(Model):
         self.draw_count = draw_count
         self.weights = None
 
-    def train(self, data: pd.DataFrame):
+    def train(self, data: pd.DataFrame, **kwargs):
         # Calculate frequency of each number
         all_numbers = data['dezenas'].explode()
         frequency = all_numbers.value_counts().sort_index()

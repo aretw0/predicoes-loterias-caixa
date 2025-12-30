@@ -7,6 +7,8 @@ from .rf_model import RandomForestModel
 from .lstm_model import LSTMModel
 from .monte_carlo import MonteCarloModel
 from .xgboost_model import XGBoostModel
+from .catboost_model import CatBoostModel
+from .transformer_model import TransformerModel
 
 __all__ = [
     'RandomModel',
@@ -17,5 +19,8 @@ __all__ = [
     'RandomForestModel',
     'LSTMModel',
     'MonteCarloModel',
-    'XGBoostModel'
+    'MonteCarloModel',
+    'XGBoostModel',
+    'CatBoostModel',
+    'TransformerModel'
 ]
