@@ -127,6 +127,15 @@ def handle_ensemble_backtest(args, lottery, game_config, model_args):
     print(json.dumps(results, indent=2, default=str))
 
 def handle_ensemble_prediction(args, lottery, game_config, model_args):
+    # args.numbers contains the quantity passed via CLI
+    # If not present, default to game draw count (std prediction) OR default play?
+    # Usually for prediction we want game draw count (6), for betting we want default play (15).
+    # Logic in main(): quantity = args.numbers if args.numbers else game_config['default_play']
+    # But main does NOT pass 'quantity' to this function.
+    # We must access args.numbers directly or game_config defaults.
+    
+    quantity = args.numbers if args.numbers else game_config['default_play']
+    
     from src.loterias.ensemble_predictor import EnsemblePredictor
     
     predictor = EnsemblePredictor(
@@ -136,7 +145,7 @@ def handle_ensemble_prediction(args, lottery, game_config, model_args):
         game_config['draw'], 
         model_args=model_args
     )
-    result = predictor.predict_next()
+    result = predictor.predict_next(count=quantity)
     
     print(json.dumps(result, indent=2, default=str))
 

@@ -17,11 +17,12 @@ class EnsemblePredictor:
         self.draw_count = draw_count
         self.model_args = model_args or {}
         
-    def predict_next(self) -> Dict[str, Any]:
+    def predict_next(self, count: int = None) -> Dict[str, Any]:
         """
         Trains with ALL available data and predicts the next unknown draw.
         """
-        print(f"--- Starting FUTURE PREDICTION for {self.lottery.name} ---", file=sys.stderr)
+        final_count = count if count is not None else self.draw_count
+        print(f"--- Starting FUTURE PREDICTION for {self.lottery.name} (Top {final_count} numbers) ---", file=sys.stderr)
         
         # Ensure data is loaded
         df = self.lottery.preprocess_data()
@@ -42,7 +43,7 @@ class EnsemblePredictor:
         try:
             mc = MonteCarloModel(self.range_min, self.range_max, self.draw_count)
             mc.train(df)
-            preds['mc'] = set(mc.predict())
+            preds['mc'] = set(mc.predict(count=final_count))
         except Exception as e:
             print(f"Error in MC: {e}", file=sys.stderr)
             preds['mc'] = set()
@@ -53,7 +54,7 @@ class EnsemblePredictor:
             rf = RandomForestModel(self.range_min, self.range_max, self.draw_count)
             # Pass model_args so n_jobs and other params are respected
             rf.train(df, n_estimators=rf_estimators, **self.model_args)
-            preds['rf'] = set(rf.predict())
+            preds['rf'] = set(rf.predict(count=final_count))
         except Exception as e:
             print(f"Error in RF: {e}", file=sys.stderr)
             preds['rf'] = set()
@@ -66,7 +67,7 @@ class EnsemblePredictor:
             xgb_args['n_estimators'] = xgb_estimators
             if 'rf_n_estimators' in xgb_args: del xgb_args['rf_n_estimators']
             xgb_model.train(df, **xgb_args)
-            preds['xgb'] = set(xgb_model.predict())
+            preds['xgb'] = set(xgb_model.predict(count=final_count))
         except Exception as e:
             print(f"Error in XGB: {e}", file=sys.stderr)
             preds['xgb'] = set()
@@ -79,7 +80,7 @@ class EnsemblePredictor:
             if 'epochs' in lstm_args: del lstm_args['epochs']
             if 'units' in lstm_args: del lstm_args['units']
             lstm.train(df, epochs=lstm_epochs, batch_size=32, verbose=0, units=lstm_units, **lstm_args)
-            preds['lstm'] = set(lstm.predict())
+            preds['lstm'] = set(lstm.predict(count=final_count))
         except Exception as e:
             print(f"Error in LSTM: {e}", file=sys.stderr)
             preds['lstm'] = set()
@@ -101,8 +102,8 @@ class EnsemblePredictor:
         for num, votes in common:
             result['consensus_ranking'].append({'number': num, 'votes': votes})
 
-        # Suggestion: Top N
-        suggestion = [num for num, _ in common[:self.draw_count]]
+        # Suggestion: Top N based on requested count (Chaos Engineering)
+        suggestion = [num for num, _ in common[:final_count]]
         result['suggestion'] = sorted(suggestion)
 
         # Cleanup

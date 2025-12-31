@@ -150,9 +150,12 @@ class LSTMModel(Model):
             
             if self.model is None:
                 return []
-                
-            prediction = self.model.predict(X_input)
-            probs = prediction[0]
+            
+            # Optimization: Use __call__ instead of predict() for faster single-batch inference 
+            # and to avoid retracing warnings in loops.
+            # Output of __call__ is a Tensor, convert to numpy.
+            prediction_tensor = self.model(X_input, training=False)
+            probs = prediction_tensor.numpy()[0]
             
             final_count = kwargs.get('count', self.draw_count)
             # Ensure final_count is int
