@@ -122,6 +122,7 @@ pytest
 
 * **[Product Vision](docs/PRODUCT.md)**: Features and goals.
 * **[Technical Guide](docs/TECHNICAL.md)**: Architecture and development.
-* **[Planning & Versioning](docs/PLANNING.md)**: Roadmap (Current: v0.5.0).
+* **[Model Cultivation](docs/MODEL_CULTIVATION.md)**: Guide on training, saving, and managing snapshots.
+* **[Planning & Versioning](docs/PLANNING.md)**: Roadmap (Current: v0.6.0).
 * **[Strategy Guide](docs/STRATEGY.md)**: How to win (statistically).
 * **[Disclaimer](docs/DISCLAIMER.md)**: Mathematical validity and academic integrity.

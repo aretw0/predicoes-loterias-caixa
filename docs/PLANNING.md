@@ -47,18 +47,22 @@ We use Semantic Versioning (SemVer).
 * [x] **Ensemble Prediction**: `EnsemblePredictor` for future draws (CLI `--predict`).
 * [x] **Weight Optimization**: Genetic Algorithm for Hybrid Model weights (Partial "Hyperparameter Tuning").
 
-### v0.6.0 - Models & Persistence (Priority)
+### v0.6.0 - Models & Persistence (In Progress)
 
 **Goal**: Establish state-of-the-art models and the ability to save work (Snapshots).
 
 * [ ] **Optimization**:
   * Fix TensorFlow function retracing (Performance).
   * Support `--numbers` CLI argument for System Bets (max numbers).
-* [ ] **New Models**:
-  * **CatBoost**: Best-in-class for tabular data.
-  * **Transformer (Attention)**: Context-aware sequence prediction.
-* [ ] **Persistence**:
-  * **Model Snapshots**: Save/Load trained models (`.pkl` / `.h5`) to avoid retraining.
+* [x] **New Models**:
+  * [x] **CatBoost**: Best-in-class for tabular data (Implemented).
+  * [x] **Transformer (Attention)**: Context-aware sequence prediction (Implemented).
+* [x] **Persistence**:
+  * [x] **Model Snapshots**: Save/Load trained models (`.pkl` / `.h5`) to avoid retraining.
+* [x] **Anomaly Detection**:
+  * [x] **AutoEncoders**: Filter out statistically unlikely games (Moved from v0.8.0).
+* [x] **Documentation**:
+  * [x] **Model Cultivation**: Guide for cultivation workflow.
 
 ### v0.7.0 - The Judge (Meta-Learning)
 
@@ -75,7 +79,6 @@ We use Semantic Versioning (SemVer).
 **Goal**: Financial simulation and filtering statistical "trash".
 
 * [ ] **Portfolio Simulator**: Track "Virtual P&L" (Profit & Loss) for different strategies (e.g., 6 vs 20 numbers).
-* [ ] **AutoEncoders**: Anomaly detection to filter bad games.
 * [ ] **Feature Engineering V2**: Deeper chaos features.
 
 ## Future Ideas
