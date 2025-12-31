@@ -117,6 +117,62 @@ class EnsemblePredictor:
             print(f"Error in CatBoost: {e}", file=sys.stderr)
             preds['catboost'] = set()
 
+        # 6. Canary Models (Fast Heuristics) - For Ledger Only
+        print(" > 6/6: Running Canaries (Analysis)...", file=sys.stderr)
+        canary_preds = {}
+        try:
+            from .models.frequency_model import FrequencyModel
+            from .models.gap_model import GapModel
+            from .models.surfing_model import SurfingModel
+
+            # Frequency
+            freq = FrequencyModel(self.range_min, self.range_max, self.draw_count)
+            freq.train(df)
+            canary_preds['frequency'] = set(freq.predict(count=final_count))
+
+            # Gap
+            gap = GapModel(self.range_min, self.range_max, self.draw_count)
+            gap.train(df)
+            canary_preds['gap'] = set(gap.predict(count=final_count))
+
+            # Surfing
+            surf = SurfingModel(self.range_min, self.range_max, self.draw_count)
+            surf.train(df)
+            canary_preds['surfing'] = set(surf.predict(count=final_count))
+            
+        except Exception as e:
+            print(f"Error in Canaries: {e}", file=sys.stderr)
+
+        # Logging to Ledger
+        try:
+            from judge.ledger import PredictionLedger
+            ledger = PredictionLedger() # Default path
+            
+            # Log Heavy Models
+            draw_col = 'Concurso' if 'Concurso' in df.columns else 'concurso'
+            last_draw = int(df[draw_col].max())
+            
+            for model_name, p_set in preds.items():
+                ledger.log_prediction(
+                    model_name=model_name, 
+                    game=self.lottery.slug, 
+                    draw_number=last_draw + 1, 
+                    predicted_numbers=sorted(list(p_set))
+                )
+            
+            # Log Canaries
+            for model_name, p_set in canary_preds.items():
+                ledger.log_prediction(
+                    model_name=f"{model_name}_canary", 
+                    game=self.lottery.slug, 
+                    draw_number=last_draw + 1, 
+                    predicted_numbers=sorted(list(p_set))
+                )
+                
+            print("   [Ledger] Predictions logged successfully.", file=sys.stderr)
+        except Exception as e:
+            print(f"   [Ledger] Failed to log: {e}", file=sys.stderr)
+
         # Consensus
         all_votes = []
         for p in preds.values():
@@ -127,6 +183,7 @@ class EnsemblePredictor:
         # Create Result Object
         result = {
             'models': {k: sorted(list(v)) for k, v in preds.items()},
+            'canaries': {k: sorted(list(v)) for k, v in canary_preds.items()}, 
             'consensus_ranking': []
         }
         
