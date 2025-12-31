@@ -9,17 +9,18 @@ import gc
 
 
 class EnsembleBacktester:
-    def __init__(self, lottery: Lottery, range_min: int, range_max: int, draw_count: int, model_args: Dict[str, Any] = None):
+    def __init__(self, lottery: Lottery, range_min: int, range_max: int, draw_count: int, model_args: Dict[str, Any] = None, snapshot_paths: Dict[str, str] = None):
         self.lottery = lottery
         self.range_min = range_min
         self.range_max = range_max
         self.draw_count = draw_count
         self.model_args = model_args or {}
+        self.snapshot_paths = snapshot_paths or {}
         
     def run(self, draws_to_test: int = 10, verbose: bool = True) -> Dict[str, Any]:
         """
         Runs the ensemble backtest.
-        Evaluates: MC, RF, LSTM, XGB vs Consensus (3/4 and 4/4).
+        Evaluates: MC, RF, LSTM, XGB, CatBoost vs Consensus.
         """
         # Ensure data is loaded
         df = self.lottery.preprocess_data()
@@ -32,7 +33,6 @@ class EnsembleBacktester:
         results = []
         
         # Parse common model args or defaults
-        # Priority: Specific (rf_n_estimators) > Generic (n_estimators) > Default (100)
         rf_estimators = int(self.model_args.get('rf_n_estimators', self.model_args.get('n_estimators', 100)))
         xgb_estimators = int(self.model_args.get('xgb_n_estimators', self.model_args.get('n_estimators', 100)))
 
@@ -41,14 +41,19 @@ class EnsembleBacktester:
         
         if verbose:
             print(f"Starting Ensemble Backtest on {self.lottery.name} for last {draws_to_test} draws...")
-            print("Models: MC, RF, LSTM, XGB.")
+            print("Models: MC, RF, LSTM, XGB, CatBoost.")
             print(f"Configuration: RF={rf_estimators} trees, XGB={xgb_estimators} trees, LSTM={lstm_epochs} epochs.")
-            print("Mode: Online Learning (Models update sequentially).")
+            if self.snapshot_paths:
+                print(f"Snapshots loaded: {list(self.snapshot_paths.keys())} (Warm Start / Validation)")
 
         # Initialize models ONCE (optimization)
         try:
             mc = MonteCarloModel(self.range_min, self.range_max, self.draw_count)
             rf = RandomForestModel(self.range_min, self.range_max, self.draw_count)
+            
+            # Loading RF Snapshot if exists
+            if 'rf' in self.snapshot_paths:
+                 rf.load(self.snapshot_paths['rf'])
             
             # XGB Setup
             xgb_model = XGBoostModel(self.range_min, self.range_max, self.draw_count)
@@ -56,11 +61,23 @@ class EnsembleBacktester:
             xgb_args['n_estimators'] = xgb_estimators
             if 'rf_n_estimators' in xgb_args: del xgb_args['rf_n_estimators']
             
+            if 'xgb' in self.snapshot_paths:
+                 xgb_model.load(self.snapshot_paths['xgb'])
+            
             # LSTM Setup
             lstm = LSTMModel(self.range_min, self.range_max, self.draw_count)
             lstm_args = self.model_args.copy()
             if 'epochs' in lstm_args: del lstm_args['epochs']
             if 'units' in lstm_args: del lstm_args['units']
+            
+            if 'lstm' in self.snapshot_paths:
+                 lstm.load(self.snapshot_paths['lstm'])
+                 
+            # CatBoost Setup
+            from .models.catboost_model import CatBoostModel
+            cat = CatBoostModel(self.range_min, self.range_max, self.draw_count)
+            if 'catboost' in self.snapshot_paths:
+                cat.load(self.snapshot_paths['catboost'])
             
         except Exception as e:
             print(f"Critical Error initializing models: {e}", file=sys.stderr)
@@ -84,8 +101,15 @@ class EnsembleBacktester:
 
             # 2. Random Forest
             try:
-                # Online update is handled by sklearn/rf_model logic (usually refits)
-                rf.train(train_data, n_estimators=rf_estimators, **self.model_args)
+                # If snapshot was loaded, 'train' might retrain or refine. 
+                # Scikit-learn Random Forest doesn't support incremental learning (partial_fit) easily.
+                # So calling train() will RETRAIN from scratch on train_data.
+                # IF the user wants to use the snapshot as is (Validation), we should SKIP train?
+                # But backtester usually implies re-training on available history.
+                # COMPROMISE: If snapshot exists, SKIP train (assume Fixed Model Validation).
+                # ELSE train normally.
+                if 'rf' not in self.snapshot_paths:
+                    rf.train(train_data, n_estimators=rf_estimators, **self.model_args)
                 preds['rf'] = set(rf.predict())
             except Exception as e:
                 print(f"Error in RF: {e}", file=sys.stderr)
@@ -93,7 +117,8 @@ class EnsembleBacktester:
 
             # 3. XGBoost
             try:
-                xgb_model.train(train_data, **xgb_args) 
+                if 'xgb' not in self.snapshot_paths:
+                    xgb_model.train(train_data, **xgb_args) 
                 preds['xgb'] = set(xgb_model.predict())
             except Exception as e:
                 print(f"Error in XGB: {e}", file=sys.stderr)
@@ -101,13 +126,27 @@ class EnsembleBacktester:
 
             # 4. LSTM (Deep Learning)
             try:
-                # Online Learning: Reuse model, fit only on new data (or retrain if logic dictates)
-                # Note: LSTMModel.train implementation should handle re-entry
-                lstm.train(train_data, epochs=lstm_epochs, batch_size=32, verbose=0, units=lstm_units, **lstm_args) 
+                # LSTM supports incremental provided weights are preserved.
+                # But our LSTM.train() calls _build_model if self.model is None.
+                # If loaded, self.model is NOT None.
+                # However, calling fit() on existing model continues training (Fine Tuning).
+                # This seems desirable for LSTM (Online Learning). 
+                # But to keep consistent with "Frozen Snapshot Validation", let's skip if snapshot present.
+                if 'lstm' not in self.snapshot_paths:
+                    lstm.train(train_data, epochs=lstm_epochs, batch_size=32, verbose=0, units=lstm_units, **lstm_args) 
                 preds['lstm'] = set(lstm.predict())
             except Exception as e:
                 print(f"Error in LSTM: {e}", file=sys.stderr)
                 preds['lstm'] = set()
+                
+            # 5. CatBoost
+            try:
+                if 'catboost' not in self.snapshot_paths:
+                    cat.train(train_data, verbose=0)
+                preds['catboost'] = set(cat.predict())
+            except Exception as e:
+                 print(f"Error in CatBoost: {e}", file=sys.stderr)
+                 preds['catboost'] = set()
 
             # Calculate Consensus
             all_votes = []
@@ -119,9 +158,9 @@ class EnsembleBacktester:
             vote_counts = Counter(all_votes)
             
             # Consensus Sets
+            con_5 = {n for n, c in vote_counts.items() if c >= 5}
             con_4 = {n for n, c in vote_counts.items() if c >= 4}
             con_3 = {n for n, c in vote_counts.items() if c >= 3}
-            con_2 = {n for n, c in vote_counts.items() if c >= 2}
             
             # Evaluation
             row_result = {
@@ -129,18 +168,18 @@ class EnsembleBacktester:
                 'target': list(target_numbers),
                 'models': {k: list(v) for k, v in preds.items()},
                 'consensus': {
-                    '4_of_4': list(con_4),
-                    '3_of_4': list(con_3),
-                    '2_of_4': list(con_2)
+                    '5_of_5': list(con_5), # Since we have 5 models now
+                    '4_of_5': list(con_4),
+                    '3_of_5': list(con_3)
                 },
                 'hits': {
                     'mc': len(preds['mc'].intersection(target_numbers)),
                     'rf': len(preds['rf'].intersection(target_numbers)),
                     'xgb': len(preds['xgb'].intersection(target_numbers)),
                     'lstm': len(preds['lstm'].intersection(target_numbers)),
+                    'catboost': len(preds['catboost'].intersection(target_numbers)),
                     'con_4': len(con_4.intersection(target_numbers)),
                     'con_3': len(con_3.intersection(target_numbers)),
-                    'con_2': len(con_2.intersection(target_numbers)),
                 }
             }
             results.append(row_result)
