@@ -9,6 +9,9 @@ class Quina(Lottery):
             data_url="https://raw.githubusercontent.com/aretw0/loterias-caixa-db/refs/heads/main/data/quina.csv",
             slug="quina"
         )
+        self.range_min = 1
+        self.range_max = 80
+        self.draw_count = 5
 
     def load_data(self) -> pd.DataFrame:
         self.data = DataManager.load_csv(self.data_url)
