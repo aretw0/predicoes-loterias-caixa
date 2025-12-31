@@ -18,7 +18,9 @@ dependencies = [
     "tabulate",
     "scikit-learn",
     "tensorflow[and-cuda]",
-    "xgboost"
+    "xgboost",
+    "catboost",
+    "lightgbm"
 ]
 requires-python = ">=3.11"
 
