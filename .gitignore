@@ -14,3 +14,4 @@ snapshots/
 *.pkl
 *.h5
 
+build/
