@@ -12,10 +12,10 @@ authors = [
 dependencies = [
     "requests",
     "numpy>=1.24,<2.0",
-    "pandas",
+    "pandas>=2.0,<2.3.0",
     "openpyxl",
     "pytest",
-    "scipy",
+    "scipy>=1.10,<1.15.0",
     "tabulate",
     "scikit-learn",
     "tensorflow[and-cuda]",
