@@ -25,7 +25,7 @@ dependencies = [
 requires-python = ">=3.11"
 
 [project.scripts]
-preloto = "src.cli:main"
+preloto = "loterias.cli:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
