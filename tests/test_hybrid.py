@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from src.loterias.models import HybridModel
+from loterias.models import HybridModel
 
 @pytest.fixture
 def mock_data():

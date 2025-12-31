@@ -64,8 +64,8 @@ Para cientistas de dados que preferem Jupyter Notebooks, o processo é transpare
 
 ```python
 import pandas as pd
-from src.loterias.megasena import MegaSena
-from src.loterias.models import CatBoostModel, AutoEncoderModel
+from loterias.megasena import MegaSena
+from loterias.models import CatBoostModel, AutoEncoderModel
 
 # 1. Carregar Dados
 lottery = MegaSena()

@@ -1,5 +1,5 @@
 import pandas as pd
-from src.loterias.quina import Quina
+from loterias.quina import Quina
 
 def analyze_quina():
     print("Inicializando análise da Quina...")

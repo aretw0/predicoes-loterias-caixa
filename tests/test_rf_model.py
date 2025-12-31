@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 import numpy as np
-from src.loterias.models.rf_model import RandomForestModel
+from loterias.models.rf_model import RandomForestModel
 
 @pytest.fixture
 def mock_data():

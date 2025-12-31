@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from src.loterias.models import RandomModel, FrequencyModel, GapModel, SurfingModel
+from loterias.models import RandomModel, FrequencyModel, GapModel, SurfingModel
 
 @pytest.fixture
 def mock_data():

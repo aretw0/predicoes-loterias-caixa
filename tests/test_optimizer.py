@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from src.loterias.optimizer import GeneticOptimizer
-from src.loterias.base import Lottery
+from loterias.optimizer import GeneticOptimizer
+from loterias.base import Lottery
 
 @pytest.fixture
 def mock_lottery():

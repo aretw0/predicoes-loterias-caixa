@@ -1,5 +1,5 @@
 import pandas as pd
-from src.loterias.lotofacil import Lotofacil
+from loterias.lotofacil import Lotofacil
 
 def analyze_lotofacil():
     print("Inicializando análise da Lotofácil...")

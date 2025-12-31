@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-from src.loterias.models.transformer_model import TransformerModel
+from loterias.models.transformer_model import TransformerModel
 
 @pytest.fixture
 def mock_data():

@@ -1,5 +1,5 @@
 import pandas as pd
-from src.loterias.megasena import MegaSena
+from loterias.megasena import MegaSena
 
 def analyze_megasena():
     print("Inicializando análise da Mega Sena...")

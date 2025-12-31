@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 import shutil
-from src.loterias.models.autoencoder_model import AutoEncoderModel
+from loterias.models.autoencoder_model import AutoEncoderModel
 
 @pytest.fixture
 def mock_data():

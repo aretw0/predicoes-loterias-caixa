@@ -3,8 +3,8 @@ import os
 import shutil
 import pandas as pd
 import numpy as np
-from src.loterias.models.frequency_model import FrequencyModel
-from src.loterias.models.transformer_model import TransformerModel
+from loterias.models.frequency_model import FrequencyModel
+from loterias.models.transformer_model import TransformerModel
 
 class TestSnapshots(unittest.TestCase):
     def setUp(self):

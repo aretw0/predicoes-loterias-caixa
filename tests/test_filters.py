@@ -1,5 +1,5 @@
 import pytest
-from src.loterias.filters import PredictionFilter
+from loterias.filters import PredictionFilter
 
 def test_filter_parsing():
     f = PredictionFilter("sum:10-20,odd:2-3,even:4")

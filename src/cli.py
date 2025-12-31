@@ -1,11 +1,11 @@
 import argparse
 import sys
 import json
-from src.loterias.megasena import MegaSena
-from src.loterias.lotofacil import Lotofacil
-from src.loterias.quina import Quina
-from src.loterias.utils import export_to_json, export_to_csv
-from src.loterias.base import ModelFactory
+from loterias.megasena import MegaSena
+from loterias.lotofacil import Lotofacil
+from loterias.quina import Quina
+from loterias.utils import export_to_json, export_to_csv
+from loterias.base import ModelFactory
 
 def parse_model_args(args_list):
     """Parses a list of strings in 'key:value' format into a dictionary."""
@@ -113,7 +113,7 @@ def main():
         handle_prediction(args, lottery, game_config, model_args, quantity)
 
 def handle_ensemble_backtest(args, lottery, game_config, model_args):
-    from src.loterias.ensemble_backtester import EnsembleBacktester
+    from loterias.ensemble_backtester import EnsembleBacktester
     
     backtester = EnsembleBacktester(
         lottery, 
@@ -136,7 +136,7 @@ def handle_ensemble_prediction(args, lottery, game_config, model_args):
     
     quantity = args.numbers if args.numbers else game_config['default_play']
     
-    from src.loterias.ensemble_predictor import EnsemblePredictor
+    from loterias.ensemble_predictor import EnsemblePredictor
     
     predictor = EnsemblePredictor(
         lottery, 
@@ -150,7 +150,7 @@ def handle_ensemble_prediction(args, lottery, game_config, model_args):
     print(json.dumps(result, indent=2, default=str))
 
 def handle_analysis(args, lottery, game_config):
-    from src.loterias.analysis import Analyzer
+    from loterias.analysis import Analyzer
     import json
     
     # Load data
@@ -168,7 +168,7 @@ def handle_analysis(args, lottery, game_config):
     print(json.dumps(report, indent=2))
 
 def handle_optimization(args, lottery, game_config):
-    from src.loterias.optimizer import GeneticOptimizer
+    from loterias.optimizer import GeneticOptimizer
     
     optimizer = GeneticOptimizer(
         lottery=lottery, 
@@ -196,7 +196,7 @@ def handle_optimization(args, lottery, game_config):
         sys.exit(1)
 
 def handle_backtest(args, lottery, game_config, model_args, quantity):
-    from src.loterias.backtester import Backtester
+    from loterias.backtester import Backtester
     
     backtester = Backtester(
         lottery=lottery, 
@@ -266,7 +266,7 @@ def handle_prediction(args, lottery, game_config, model_args, quantity):
         sys.exit(1)
 
     # Initialize Filters
-    from src.loterias.filters import PredictionFilter
+    from loterias.filters import PredictionFilter
     prediction_filter = PredictionFilter(args.filters) if args.filters else None
     
     # Initialize Validator
@@ -277,7 +277,7 @@ def handle_prediction(args, lottery, game_config, model_args, quantity):
             # However, ModelFactory needs type name. Since we just have a path, we should assume it's an AutoEncoder 
             # or try to infer. For v0.6.0, let's enforce it must be an AutoEncoder loadable by AutoEncoderModel.
             # Or better: Create an empty AutoEncoderModel and load weights.
-            from src.loterias.models.autoencoder_model import AutoEncoderModel
+            from loterias.models.autoencoder_model import AutoEncoderModel
             validator = AutoEncoderModel(game_config['min'], game_config['max'], game_config['draw'])
             print(f"Loading validator from {args.validator_model}...", file=sys.stderr)
             validator.load(args.validator_model)
