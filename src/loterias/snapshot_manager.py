@@ -24,14 +24,18 @@ class SnapshotManager:
     def _ensure_dir(self, path: str):
         os.makedirs(path, exist_ok=True)
 
-    def _get_model_path(self, model_name: str, context: str) -> str:
+    def _get_model_path(self, model_name: str, context: str, extension: str, params: Dict[str, Any] = None) -> str:
         """
-        Generates standard path: snapshots/{game}/{context}/{model_name}_v1
+        Generates a VERSIONED path: snapshots/{game}/{context}/{generated_name}
         """
-        # Clean paths (no version extension here, save() handles it)
         base = os.path.join(self.base_dir, self.lottery.name.lower(), context)
         self._ensure_dir(base)
-        return os.path.join(base, model_name)
+        
+        # Use SnapshotVersioning to generate name
+        from judge.versioning import SnapshotVersioning
+        filename = SnapshotVersioning.generate_versioned_filename(model_name, extension, params)
+        
+        return os.path.join(base, filename)
 
     def cultivate_generalists(self, 
                             epochs: int = 100, 
@@ -73,9 +77,21 @@ class SnapshotManager:
             try:
                 model = TransformerModel(1, 60, 6)
                 model.train(df, epochs=epochs, batch_size=64, verbose=0)
-                path = self._get_model_path("transformer_v1", context)
-                model.save(path)
-                print(f"    Saved: {path}")
+                
+                # Base save uses .keras internally for save(), but we need to give base path usually?
+                # Actually model.save(path) in base.py usually handles extension logic or we pass it?
+                # Looking at base.py: save(path) imports pickle etc.
+                # Looking at lstm_model.py: save(path) adds .keras itself.
+                # So we should pass the base name WITHOUT extension to model.save, 
+                # BUT generate_versioned_filename creates WITH extension.
+                # We need to strip it for the model.save method if the model adds it.
+                
+                params = {'epochs': epochs, 'batch_size': 64}
+                path_with_ext = self._get_model_path("transformer", context, "keras", params)
+                path_base = path_with_ext.replace(".keras", "") # Strip so model.save can add it
+                
+                model.save(path_base)
+                print(f"    Saved: {path_with_ext}")
             except Exception as e:
                 print(f"    Error: {e}")
 
@@ -85,9 +101,13 @@ class SnapshotManager:
             try:
                 model = LSTMModel(1, 60, 6)
                 model.train(df, epochs=epochs, batch_size=32, verbose=0)
-                path = self._get_model_path("lstm_v1", context)
-                model.save(path)
-                print(f"    Saved: {path}")
+                
+                params = {'epochs': epochs, 'batch_size': 32}
+                path_with_ext = self._get_model_path("lstm", context, "keras", params)
+                path_base = path_with_ext.replace(".keras", "")
+                
+                model.save(path_base)
+                print(f"    Saved: {path_with_ext}")
             except Exception as e:
                 print(f"    Error: {e}")
 
@@ -95,13 +115,15 @@ class SnapshotManager:
         if 'autoencoder' in models:
             print(f" >> Training AutoEncoder (Fiscal) [{context}]...")
             try:
-                # Latent dim 16 is good default
                 model = AutoEncoderModel(1, 60, 6, latent_dim=16) 
-                # AE needs less epochs usually, but robust config is fine
                 model.train(df, epochs=int(epochs/2)+10, batch_size=32, verbose=0)
-                path = self._get_model_path("autoencoder_fiscal_v1", context)
-                model.save(path)
-                print(f"    Saved: {path}")
+                
+                params = {'epochs': int(epochs/2)+10, 'latent_dim': 16}
+                path_with_ext = self._get_model_path("autoencoder_fiscal", context, "keras", params)
+                path_base = path_with_ext.replace(".keras", "")
+                
+                model.save(path_base)
+                print(f"    Saved: {path_with_ext}")
             except Exception as e:
                 print(f"    Error: {e}")
 
@@ -110,16 +132,17 @@ class SnapshotManager:
             print(f" >> Training CatBoost [{context}]...")
             try:
                 model = CatBoostModel(1, 60, 6)
-                # CatBoost handles its own verbose
-                # If GPU is enabled, we should try to pass task_type='GPU' via kwargs if model supports
-                # Taking advantage of dynamic kwargs in train()
                 params = {'verbose': 0}
                 if self.gpu_enabled:
                     params['task_type'] = 'GPU'
                     
                 model.train(df, **params)
-                path = self._get_model_path("catboost_v1", context)
-                model.save(path)
-                print(f"    Saved: {path}")
+                
+                # CatBoost uses .cbm
+                path_with_ext = self._get_model_path("catboost", context, "cbm", params)
+                path_base = path_with_ext.replace(".cbm", "")
+                
+                model.save(path_base)
+                print(f"    Saved: {path_with_ext}")
             except Exception as e:
                 print(f"    Error: {e}")

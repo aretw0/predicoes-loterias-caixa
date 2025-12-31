@@ -31,27 +31,27 @@ def find_snapshots(game_name, mode='auto'):
     if mode in ['auto', 'generalist']:
         paths_to_check.append(f"{base_dir}/generalistas/")
         
-    def find_first(pattern):
+    def find_latest_in_paths(model_name, extension):
+        from judge.versioning import SnapshotVersioning
         for path in paths_to_check:
-            files = glob.glob(f"{path}/{pattern}")
-            if files:
-                return files[0]
+            # Check for versioned files
+            latest = SnapshotVersioning.find_latest_snapshot(path, model_name, extension)
+            if latest:
+                return latest
         return None
 
-    # 1. CatBoost
-    cb_path = find_first("catboost_*.cbm")
+    # 1. CatBoost (extension .cbm)
+    cb_path = find_latest_in_paths("catboost", "cbm")
     if cb_path: 
-        # Strip extension because model.load() expects base path (it adds .cbm itself)
         snapshots['catboost'] = cb_path.replace(".cbm", "")
 
-    # 2. LSTM
-    lstm_path = find_first("lstm_*.keras")
+    # 2. LSTM (extension .keras)
+    lstm_path = find_latest_in_paths("lstm", "keras")
     if lstm_path: 
-        # Strip extension because model.load() expects base path (it adds .keras itself)
         snapshots['lstm'] = lstm_path.replace(".keras", "")
 
     # 3. Transformer (Optional)
-    trans_path = find_first("transformer_*.keras")
+    trans_path = find_latest_in_paths("transformer", "keras")
     # if trans_path: ... (EnsemblePredictor needs support first)
     
     return snapshots
