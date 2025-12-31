@@ -11,26 +11,38 @@ class PredictionLedger:
 
     def _ensure_file_exists(self):
         """Ensures the CSV file exists with the correct headers."""
+        columns = [
+            "timestamp", "game", "draw_number", "model_name", 
+            "predicted_numbers", "outcome", "metadata"
+        ]
+        
         if not os.path.exists(self.filepath):
             os.makedirs(os.path.dirname(self.filepath), exist_ok=True)
-            df = pd.DataFrame(columns=[
-                "timestamp", "game", "draw_number", "model_name", 
-                "predicted_numbers", "outcome"
-            ])
+            df = pd.DataFrame(columns=columns)
             df.to_csv(self.filepath, index=False)
+        else:
+            # Migration check: Append metadata column if missing
+            try:
+                df = pd.read_csv(self.filepath)
+                if 'metadata' not in df.columns:
+                    df['metadata'] = None
+                    df.to_csv(self.filepath, index=False)
+            except Exception as e:
+                print(f"Warning: Could not check schema migration: {e}")
 
     def log_prediction(self, 
                        model_name: str, 
                        game: str, 
                        draw_number: int, 
                        predicted_numbers: List[int],
-                       outcome: str = None):
+                       outcome: str = None,
+                       metadata: Dict[str, Any] = None):
         """
         Logs a single prediction to the ledger.
         """
         # Format predicted_numbers as simplified string/json for storage
-        # Using simple JSON string for robust parsing later
         pred_str = json.dumps(sorted(list(predicted_numbers)))
+        meta_str = json.dumps(metadata) if metadata else None
         
         new_row = {
             "timestamp": datetime.now().isoformat(),
@@ -38,13 +50,18 @@ class PredictionLedger:
             "draw_number": draw_number,
             "model_name": model_name,
             "predicted_numbers": pred_str,
-            "outcome": outcome
+            "outcome": outcome,
+            "metadata": meta_str
         }
         
         # Append to CSV
-        # We use mode='a' and header=False to append efficiently
         df = pd.DataFrame([new_row])
-        df.to_csv(self.filepath, mode='a', header=not os.path.exists(self.filepath), index=False)
+        # Force column order if possible, but append mode handles it usually or we use full write if header mismatch
+        # Simpler to just append to existing file
+        if os.path.exists(self.filepath):
+             df.to_csv(self.filepath, mode='a', header=False, index=False)
+        else:
+             df.to_csv(self.filepath, mode='w', header=True, index=False)
 
     def fetch_history(self, model_name: str = None, game: str = None) -> pd.DataFrame:
         """

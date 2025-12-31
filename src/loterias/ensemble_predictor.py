@@ -153,11 +153,20 @@ class EnsemblePredictor:
             last_draw = int(df[draw_col].max())
             
             for model_name, p_set in preds.items():
+                # Extract metadata (snapshot path or config)
+                meta = {}
+                if model_name in self.snapshot_paths:
+                    meta['snapshot_path'] = self.snapshot_paths[model_name]
+                    meta['type'] = 'loaded_snapshot'
+                else:
+                    meta['type'] = 'trained_on_fly'
+                
                 ledger.log_prediction(
                     model_name=model_name, 
                     game=self.lottery.slug, 
                     draw_number=last_draw + 1, 
-                    predicted_numbers=sorted(list(p_set))
+                    predicted_numbers=sorted(list(p_set)),
+                    metadata=meta
                 )
             
             # Log Canaries
@@ -166,7 +175,8 @@ class EnsemblePredictor:
                     model_name=f"{model_name}_canary", 
                     game=self.lottery.slug, 
                     draw_number=last_draw + 1, 
-                    predicted_numbers=sorted(list(p_set))
+                    predicted_numbers=sorted(list(p_set)),
+                    metadata={'type': 'heuristic_canary'}
                 )
                 
             print("   [Ledger] Predictions logged successfully.", file=sys.stderr)

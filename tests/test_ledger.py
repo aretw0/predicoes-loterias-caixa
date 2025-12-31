@@ -22,14 +22,16 @@ def ledger():
 def test_ledger_creation(ledger):
     assert os.path.exists(TEST_LEDGER_FILE)
     df = pd.read_csv(TEST_LEDGER_FILE)
-    assert list(df.columns) == ["timestamp", "game", "draw_number", "model_name", "predicted_numbers", "outcome"]
+    expected_cols = ["timestamp", "game", "draw_number", "model_name", "predicted_numbers", "outcome", "metadata"]
+    assert list(df.columns) == expected_cols
 
 def test_log_prediction(ledger):
     ledger.log_prediction(
         model_name="test_model",
         game="megasena",
         draw_number=2000,
-        predicted_numbers=[1, 2, 3, 4, 5, 6]
+        predicted_numbers=[1, 2, 3, 4, 5, 6],
+        metadata={"version": "v1"}
     )
     
     df = pd.read_csv(TEST_LEDGER_FILE)
@@ -37,6 +39,7 @@ def test_log_prediction(ledger):
     assert df.iloc[0]['model_name'] == "test_model"
     assert df.iloc[0]['game'] == "megasena"
     assert "[1, 2, 3, 4, 5, 6]" in df.iloc[0]['predicted_numbers']
+    assert '{"version": "v1"}' in df.iloc[0]['metadata']
 
 def test_fetch_history_filtering(ledger):
     ledger.log_prediction("model_A", "megasena", 100, [1,2])
