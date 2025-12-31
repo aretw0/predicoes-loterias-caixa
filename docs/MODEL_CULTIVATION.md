@@ -108,6 +108,9 @@ Se você tem acesso a hardware potente (como GPUs T4/A100 no Google Colab ou loc
 
 ### Parâmetros Agressivos (Copy-Paste)
 
+> **Dica Colab**: Em vez de fazer upload dos arquivos Python manualmente, você pode instalar o projeto direto do GitHub na primeira célula do notebook:
+> `!pip install git+https://github.com/aretw0/predicoes-loterias-caixa.git`
+
 Estes comandos visam extrair o máximo de performance, mesmo que levem horas treinando.
 
 #### A. CatBoost (Gradient Boosting)
