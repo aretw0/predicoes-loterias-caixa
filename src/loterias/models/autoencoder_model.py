@@ -8,7 +8,7 @@ import pickle
 import os
 
 class AutoEncoderModel(Model):
-    def __init__(self, range_min: int, range_max: int, draw_count: int):
+    def __init__(self, range_min: int, range_max: int, draw_count: int, latent_dim: int = 16):
         super().__init__("AutoEncoder Anomaly Detector")
         self.range_min = range_min
         self.range_max = range_max
@@ -16,7 +16,7 @@ class AutoEncoderModel(Model):
         self.model = None
         # Input size is simply the range of numbers (one-hot encoded draw)
         self.input_size = self.range_max + 1
-        self.encoding_dim = 16 # Bottleneck size
+        self.encoding_dim = latent_dim # Bottleneck size configurable
 
     def _draw_to_onehot(self, draw):
         vec = np.zeros(self.input_size)
