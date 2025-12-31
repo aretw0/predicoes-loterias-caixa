@@ -25,7 +25,7 @@ def test_create_individual(mock_lottery, game_config):
     assert len(ind) == 3
     assert all(0.0 <= x <= 10.0 for x in ind)
 
-@patch('src.loterias.optimizer.Backtester')
+@patch('loterias.optimizer.Backtester')
 def test_calculate_fitness(mock_backtester_cls, mock_lottery, game_config):
     # Setup mock
     mock_instance = mock_backtester_cls.return_value
@@ -44,7 +44,7 @@ def test_calculate_fitness(mock_backtester_cls, mock_lottery, game_config):
     # Score should be > 0 (Quadra bonus)
     assert score > 0
 
-@patch('src.loterias.optimizer.Backtester')
+@patch('loterias.optimizer.Backtester')
 def test_optimize_flow(mock_backtester_cls, mock_lottery, game_config):
     # Mock return
     mock_instance = mock_backtester_cls.return_value
