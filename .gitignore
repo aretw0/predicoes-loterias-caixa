@@ -5,7 +5,7 @@ logs/
 bin/
 __pycache__/
 predictions.json
-ledger.csv
+
 *.egg-info
 catboost_info/
 snapshots/
