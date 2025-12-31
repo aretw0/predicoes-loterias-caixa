@@ -47,13 +47,13 @@ We use Semantic Versioning (SemVer).
 * [x] **Ensemble Prediction**: `EnsemblePredictor` for future draws (CLI `--predict`).
 * [x] **Weight Optimization**: Genetic Algorithm for Hybrid Model weights (Partial "Hyperparameter Tuning").
 
-### v0.6.0 - Models & Persistence (In Progress)
+### v0.6.0 - Models & Persistence (Completed)
 
 **Goal**: Establish state-of-the-art models and the ability to save work (Snapshots).
 
-* [ ] **Optimization**:
-  * Fix TensorFlow function retracing (Performance).
-  * Support `--numbers` CLI argument for System Bets (max numbers).
+* [x] **Optimization**:
+  * [x] Fix TensorFlow function retracing (Performance).
+  * [x] Support `--numbers` CLI argument for System Bets (max numbers).
 * [x] **New Models**:
   * [x] **CatBoost**: Best-in-class for tabular data (Implemented).
   * [x] **Transformer (Attention)**: Context-aware sequence prediction (Implemented).
@@ -64,7 +64,7 @@ We use Semantic Versioning (SemVer).
 * [x] **Documentation**:
   * [x] **Model Cultivation**: Guide for cultivation workflow.
 
-### v0.7.0 - The Judge (Meta-Learning)
+### v0.7.0 - The Judge (Meta-Learning) (In Progress)
 
 **Goal**: Build the "Trust System" to weigh model opinions dynamically.
 
