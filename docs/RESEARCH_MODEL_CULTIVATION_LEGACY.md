@@ -1,3 +1,4 @@
+# LEGACY: Replaced by run_factory.py and automated MLOps
 # Cultivo de Modelos (Model Cultivation)
 
 > "Não basta plantar a semente, é preciso regar e colher no momento certo."
