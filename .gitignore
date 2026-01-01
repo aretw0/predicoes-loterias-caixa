@@ -15,3 +15,4 @@ snapshots/
 *.h5
 
 build/
+data/training_log.csv
