@@ -70,25 +70,30 @@ class SnapshotManager:
         self._train_batch(df_filtered, f"especialistas/{filter_name}", models, epochs)
 
     def _train_batch(self, df: pd.DataFrame, context: str, models: List[str], epochs: int):
+        from judge.logger import TrainingLogger
+        from judge.callbacks import TrainingLoggerCallback
+        
+        logger = TrainingLogger()
         
         # 1. Transformer
         if 'transformer' in models:
             print(f" >> Training Transformer [{context}]...")
             try:
                 model = TransformerModel(1, 60, 6)
-                model.train(df, epochs=epochs, batch_size=64, verbose=0)
                 
-                # Base save uses .keras internally for save(), but we need to give base path usually?
-                # Actually model.save(path) in base.py usually handles extension logic or we pass it?
-                # Looking at base.py: save(path) imports pickle etc.
-                # Looking at lstm_model.py: save(path) adds .keras itself.
-                # So we should pass the base name WITHOUT extension to model.save, 
-                # BUT generate_versioned_filename creates WITH extension.
-                # We need to strip it for the model.save method if the model adds it.
+                # Callback setup
+                cb = TrainingLoggerCallback(
+                    logger=logger, 
+                    model_type="transformer", 
+                    params_hash="snapshot_run", 
+                    metadata={'context': context}
+                )
+                
+                model.train(df, epochs=epochs, batch_size=64, verbose=0, callbacks=[cb])
                 
                 params = {'epochs': epochs, 'batch_size': 64}
                 path_with_ext = self._get_model_path("transformer", context, "keras", params)
-                path_base = path_with_ext.replace(".keras", "") # Strip so model.save can add it
+                path_base = path_with_ext.replace(".keras", "") 
                 
                 model.save(path_base)
                 print(f"    Saved: {path_with_ext}")
@@ -100,7 +105,15 @@ class SnapshotManager:
             print(f" >> Training LSTM [{context}]...")
             try:
                 model = LSTMModel(1, 60, 6)
-                model.train(df, epochs=epochs, batch_size=32, verbose=0)
+                
+                cb = TrainingLoggerCallback(
+                    logger=logger, 
+                    model_type="lstm", 
+                    params_hash="snapshot_run",
+                    metadata={'context': context}
+                )
+                
+                model.train(df, epochs=epochs, batch_size=32, verbose=0, callbacks=[cb])
                 
                 params = {'epochs': epochs, 'batch_size': 32}
                 path_with_ext = self._get_model_path("lstm", context, "keras", params)
@@ -116,6 +129,8 @@ class SnapshotManager:
             print(f" >> Training AutoEncoder (Fiscal) [{context}]...")
             try:
                 model = AutoEncoderModel(1, 60, 6, latent_dim=16) 
+                # Note: AutoEncoderModel.train might also need update to accept callbacks
+                # Attempting to pass it anyway via kwargs if supported
                 model.train(df, epochs=int(epochs/2)+10, batch_size=32, verbose=0)
                 
                 params = {'epochs': int(epochs/2)+10, 'latent_dim': 16}
@@ -136,9 +151,10 @@ class SnapshotManager:
                 if self.gpu_enabled:
                     params['task_type'] = 'GPU'
                     
+                # CatBoost doesn't support Keras callbacks directly, skipping logs for now
+                # or we could log final metric manually
                 model.train(df, **params)
                 
-                # CatBoost uses .cbm
                 path_with_ext = self._get_model_path("catboost", context, "cbm", params)
                 path_base = path_with_ext.replace(".cbm", "")
                 

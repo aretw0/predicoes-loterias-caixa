@@ -129,7 +129,8 @@ class LSTMModel(Model):
         if self.model is None:
             self._build_model()
             
-        history = self.model.fit(X, y, epochs=epochs, batch_size=batch_size, verbose=1)
+        callbacks = kwargs.get('callbacks', [])
+        history = self.model.fit(X, y, epochs=epochs, batch_size=batch_size, verbose=1, callbacks=callbacks)
         return history
 
     def predict(self, **kwargs) -> list:

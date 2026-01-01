@@ -69,7 +69,8 @@ class AutoEncoderModel(Model):
             
         # AutoEncoder trains to reconstruct input (X -> X)
         print(f"Training AutoEncoder: epochs={epochs}, batch={batch_size}, latent={self.encoding_dim}")
-        history = self.model.fit(X, X, epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True)
+        callbacks = kwargs.get('callbacks', [])
+        history = self.model.fit(X, X, epochs=epochs, batch_size=batch_size, verbose=1, shuffle=True, callbacks=callbacks)
         return history
 
     def predict(self, **kwargs) -> list:

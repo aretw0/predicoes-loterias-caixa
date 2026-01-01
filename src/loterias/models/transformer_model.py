@@ -149,7 +149,8 @@ class TransformerModel(Model):
             print("Not enough data to train Transformer.")
             return
 
-        history = self.model.fit(X, y, epochs=epochs, batch_size=batch_size, verbose=1)
+        callbacks = kwargs.get('callbacks', [])
+        history = self.model.fit(X, y, epochs=epochs, batch_size=batch_size, verbose=1, callbacks=callbacks)
         return history
 
     def predict(self, **kwargs) -> list:
@@ -174,6 +175,11 @@ class TransformerModel(Model):
             # Optimization: Use __call__ for faster inference
             prediction_tensor = self.model(X_input, training=False)
             probs = prediction_tensor.numpy()[0]
+            
+            # Mask out numbers below range_min (e.g. 0)
+            if self.range_min > 0:
+                probs[:self.range_min] = -1.0
+            
             
             final_count = kwargs.get('count', self.draw_count)
             # Ensure final_count is int
