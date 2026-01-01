@@ -2,58 +2,66 @@
 
 ## Architecture
 
-The project follows a modular architecture within `src/loterias`:
+The project has been refactored (v0.7.0) into a modular hex-like architecture:
 
-* **`base.py`**: Abstract Base Classes (`Lottery`, `Model`) defining the contract for new games and models.
-* **`data_manager.py`**: Handles downloading, caching, and loading data from the external [loterias-caixa-db](https://github.com/aretw0/loterias-caixa-db) repository.
-* **`models`**: Concrete implementations of prediction logic:
-  * `rf_model.py`: Random Forest implementation.
-  * `lstm_model.py`: Deep Learning (LSTM) implementation.
-  * `monte_carlo.py`: Simulation based on statistical bounds.
-  * `xgboost_model.py`: Gradient Boosting implementation.
-  * Other heuristic models (`frequency`, `gap`, etc.).
-* **`features.py`**: Centralized mathematical logic (Sum, Odd/Even, Spread).
-* **`ensemble_backtester.py`**: Orchestrator for Consensus Strategy (Tira-Teima).
-* **`analysis.py`**: Statistical reporting engine.
-* **Game Implementations**: `megasena.py`, `lotofacil.py`, `quina.py` inherit from `Lottery`.
-* **`utils.py`**: Helper functions for exporting data (JSON/CSV).
+* **`src/core`**: Domain Entities.
+  * `base.py`: Abstract Base Classes (`Lottery`, `Model`).
+  * `games/`: specific implementations (`MegaSena`, `Lotofacil`).
+* **`src/data`**: Data Layer.
+  * `data_manager.py`: Downloads/Caches Caixa data.
+  * `features.py`: Feature Engineering (Sum, Spread, Odd/Even).
+  * `filters.py`: Statistical Filters.
+* **`src/models`**: Predictive Models.
+  * `deep/`: LSTM, Transformer, AutoEncoder.
+  * `tree/`: RandomForest, XGBoost, CatBoost.
+  * `heuristic/`: Frequency, Gap, Surfing.
+* **`src/ops`**: Operations & MLOps.
+  * `snapshot.py`: `SnapshotManager` for model cultivation.
+  * `optimizer.py`: Genetic Optimizer for hybrid weights.
+  * `inspector.py`: `TrainingInspector` for log analysis.
+  * `logger.py`: Training metrics logger.
+* **`src/judge`**: Meta-Learning System.
+  * `ledger.py`: `PredictionLedger` (CSV-based brain).
+  * `ensemble.py`: `EnsemblePredictor`.
+* **`src/cli`**: Command Line Interface entry points.
+
+## Model Cultivation (MLOps)
+
+We use a "Factory" pattern to train and version models.
+
+### Scripts
+
+* **`run_factory.py`**: Local training script.
+  * Usage: `python run_factory.py --epochs 100 --mode all`
+  * Cultivates both Generalist (Full history) and Specialist (Filtered) models.
+* **`run_ensemble.py`**: Local inference script using the best snapshots.
+  * Usage: `python run_ensemble.py`
+
+### Auto-Versioning
+
+Models are saved in `snapshots/{game}/{context}/` with versioned names (Timestamp + Hash), e.g., `lstm_20251231-2359_a1b2c3.keras`.
+
+## CLI Implementation
+
+The CLI primarily resides in `src/cli/main.py`.
+
+* **`preloto predict`**: Standard prediction.
+* **`preloto inspect`**: Check training health.
+* **`preloto optimize`**: Find best heuristic weights.
+* **`preloto backtest`**: Validate strategies.
 
 ## Development Setup
 
-### Requirementss
-
-* Python 3.8+
-* `pip`
-
 ### Installation
-
-The project is configured for editable installation:
 
 ```bash
 pip install -e .
 ```
 
-This installs dependencies (`pandas`, `requests`, `openpyxl`, `pytest`) and registers the `preloto` CLI command.
-
-* **Optional**: `tensorflow` is required for `--model lstm`.
-* **Optional**: `xgboost` is required for `--model xgb`.
-
 ### Testing
-
-We use `pytest` for unit testing.
 
 ```bash
 pytest
 ```
 
-Tests are located in `tests/` and cover:
-
-* CLI flow (`tests/test_cli_flow.py`)
-* Model logic and determinism (`tests/test_models.py`)
-
-## CLI Implementation
-
-The CLI (`src/cli.py`) uses `argparse` to provide a single entry point `preloto`.
-
-* **Defaults**: It attempts to use smart defaults (e.g., `model=random`, `numbers=max_allowed`) to minimize user typing.
-* **Output**: Primarily JSON to `stdout` to allow piping to other tools. Errors go to `stderr`.
+Tests are located in `tests/` and cover all distinct modules (`core`, `models`, `ops`, `judge`).

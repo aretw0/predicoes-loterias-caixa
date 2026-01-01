@@ -118,11 +118,34 @@ preloto megasena --backtest --ensemble --draws 10
 pytest
 ```
 
+## Model Cultivation (MLOps)
+
+**Factory (Training)**:
+Train models locally (Transformers, LSTM, etc.).
+
+```bash
+python run_factory.py --epochs 100 --mode all
+```
+
+**Inspection (Health Check)**:
+Check if models are overfitting.
+
+```bash
+preloto inspect
+```
+
+**Ensemble Inference**:
+Use trained snapshots to predict.
+
+```bash
+python run_ensemble.py
+```
+
 ## Documentation
 
 * **[Product Vision](docs/PRODUCT.md)**: Features and goals.
 * **[Technical Guide](docs/TECHNICAL.md)**: Architecture and development.
-* **[Model Cultivation](docs/MODEL_CULTIVATION.md)**: Guide on training, saving, and managing snapshots.
-* **[Planning & Versioning](docs/PLANNING.md)**: Roadmap (Current: v0.6.0).
+* **[Architecture](docs/ARCHITECTURE.md)**: Deep dive into System Design (v0.7.0).
+* **[Planning & Versioning](docs/PLANNING.md)**: Roadmap (Current: v0.7.0).
 * **[Strategy Guide](docs/STRATEGY.md)**: How to win (statistically).
 * **[Disclaimer](docs/DISCLAIMER.md)**: Mathematical validity and academic integrity.
