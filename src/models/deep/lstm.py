@@ -3,8 +3,8 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Embedding, Input
-from ..base import Model
-from ..features import calculate_sum, count_odds, count_evens, calculate_spread
+from core.base import Model
+from data.features import calculate_sum, count_odds, count_evens, calculate_spread
 
 class LSTMModel(Model):
     def __init__(self, range_min: int, range_max: int, draw_count: int):

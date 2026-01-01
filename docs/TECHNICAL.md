@@ -7,11 +7,11 @@ The project follows a modular architecture within `src/loterias`:
 * **`base.py`**: Abstract Base Classes (`Lottery`, `Model`) defining the contract for new games and models.
 * **`data_manager.py`**: Handles downloading, caching, and loading data from the external [loterias-caixa-db](https://github.com/aretw0/loterias-caixa-db) repository.
 * **`models`**: Concrete implementations of prediction logic:
-    * `rf_model.py`: Random Forest implementation.
-    * `lstm_model.py`: Deep Learning (LSTM) implementation.
-    * `monte_carlo.py`: Simulation based on statistical bounds.
-    * `xgboost_model.py`: Gradient Boosting implementation.
-    * Other heuristic models (`frequency`, `gap`, etc.).
+  * `rf_model.py`: Random Forest implementation.
+  * `lstm_model.py`: Deep Learning (LSTM) implementation.
+  * `monte_carlo.py`: Simulation based on statistical bounds.
+  * `xgboost_model.py`: Gradient Boosting implementation.
+  * Other heuristic models (`frequency`, `gap`, etc.).
 * **`features.py`**: Centralized mathematical logic (Sum, Odd/Even, Spread).
 * **`ensemble_backtester.py`**: Orchestrator for Consensus Strategy (Tira-Teima).
 * **`analysis.py`**: Statistical reporting engine.
@@ -34,6 +34,7 @@ pip install -e .
 ```
 
 This installs dependencies (`pandas`, `requests`, `openpyxl`, `pytest`) and registers the `preloto` CLI command.
+
 * **Optional**: `tensorflow` is required for `--model lstm`.
 * **Optional**: `xgboost` is required for `--model xgb`.
 

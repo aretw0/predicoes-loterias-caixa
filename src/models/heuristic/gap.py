@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from ..base import Model
+from core.base import Model
 
 class GapModel(Model):
     def __init__(self, range_min: int, range_max: int, draw_count: int):

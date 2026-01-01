@@ -2,7 +2,7 @@ import pytest
 import os
 import shutil
 import pandas as pd
-from src.judge.logger import TrainingLogger
+from ops.logger import TrainingLogger
 
 TEST_LOG_FILE = "tests/data/test_training_log.csv"
 

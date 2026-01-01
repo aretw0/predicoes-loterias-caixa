@@ -2,10 +2,12 @@ import os
 import tensorflow as tf
 import pandas as pd
 from typing import List, Optional, Callable, Dict, Any
-from .base import Lottery
-from .megasena import MegaSena
-from .models import TransformerModel, LSTMModel, AutoEncoderModel
-from .models.catboost_model import CatBoostModel
+from core.base import Lottery
+from core.games.megasena import MegaSena
+from models.deep.transformer import TransformerModel
+from models.deep.lstm import LSTMModel
+from models.deep.autoencoder import AutoEncoderModel
+from models.tree.catboost import CatBoostModel
 
 class SnapshotManager:
     """
@@ -32,7 +34,7 @@ class SnapshotManager:
         self._ensure_dir(base)
         
         # Use SnapshotVersioning to generate name
-        from judge.versioning import SnapshotVersioning
+        from ops.versioning import SnapshotVersioning
         filename = SnapshotVersioning.generate_versioned_filename(model_name, extension, params)
         
         return os.path.join(base, filename)
@@ -70,8 +72,8 @@ class SnapshotManager:
         self._train_batch(df_filtered, f"especialistas/{filter_name}", models, epochs)
 
     def _train_batch(self, df: pd.DataFrame, context: str, models: List[str], epochs: int):
-        from judge.logger import TrainingLogger
-        from judge.callbacks import TrainingLoggerCallback
+        from ops.logger import TrainingLogger
+        from ops.callbacks import TrainingLoggerCallback
         
         logger = TrainingLogger()
         

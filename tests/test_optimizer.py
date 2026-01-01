@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from loterias.optimizer import GeneticOptimizer
-from loterias.base import Lottery
+from ops.optimizer import GeneticOptimizer
+from core.base import Lottery
 
 @pytest.fixture
 def mock_lottery():
@@ -25,7 +25,7 @@ def test_create_individual(mock_lottery, game_config):
     assert len(ind) == 3
     assert all(0.0 <= x <= 10.0 for x in ind)
 
-@patch('loterias.optimizer.Backtester')
+@patch('ops.optimizer.Backtester')
 def test_calculate_fitness(mock_backtester_cls, mock_lottery, game_config):
     # Setup mock
     mock_instance = mock_backtester_cls.return_value
@@ -44,7 +44,7 @@ def test_calculate_fitness(mock_backtester_cls, mock_lottery, game_config):
     # Score should be > 0 (Quadra bonus)
     assert score > 0
 
-@patch('loterias.optimizer.Backtester')
+@patch('ops.optimizer.Backtester')
 def test_optimize_flow(mock_backtester_cls, mock_lottery, game_config):
     # Mock return
     mock_instance = mock_backtester_cls.return_value

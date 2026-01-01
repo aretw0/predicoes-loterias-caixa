@@ -1,7 +1,7 @@
 
 import pytest
-from loterias.ensemble_predictor import EnsemblePredictor
-from loterias.megasena import MegaSena
+from judge.ensemble import EnsemblePredictor
+from core.games.megasena import MegaSena
 
 def test_ensemble_chaos_prediction():
     """

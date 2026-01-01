@@ -1,5 +1,5 @@
 import pandas as pd
-from .base import ModelFactory, Lottery
+from core.base import ModelFactory, Lottery
 from typing import List, Dict, Any
 
 class Backtester:

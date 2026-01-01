@@ -1,8 +1,8 @@
 import random
 import numpy as np
 from typing import List, Dict, Tuple
-from .backtester import Backtester
-from .base import Lottery
+from judge.backtest_standard import Backtester
+from core.base import Lottery
 
 class GeneticOptimizer:
     def __init__(self, lottery: Lottery, game_config: Dict, population_size: int = 20, generations: int = 10, mutation_rate: float = 0.1):

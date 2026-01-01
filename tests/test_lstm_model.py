@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 import numpy as np
-from loterias.models.lstm_model import LSTMModel
+from models.deep.lstm import LSTMModel
 
 @pytest.fixture
 def mock_data():

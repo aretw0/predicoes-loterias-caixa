@@ -1,17 +1,17 @@
-from .base import Lottery
-from .data_manager import DataManager
+from core.base import Lottery
+from data.manager import DataManager
 import pandas as pd
 
-class Lotofacil(Lottery):
+class MegaSena(Lottery):
     def __init__(self):
         super().__init__(
-            name="Lotofácil",
-            data_url="https://raw.githubusercontent.com/aretw0/loterias-caixa-db/refs/heads/main/data/lotofacil.csv",
-            slug="lotofacil"
+            name="Mega Sena",
+            data_url="https://raw.githubusercontent.com/aretw0/loterias-caixa-db/refs/heads/main/data/megasena.csv",
+            slug="megasena"
         )
         self.range_min = 1
-        self.range_max = 25
-        self.draw_count = 15
+        self.range_max = 60
+        self.draw_count = 6
 
     def load_data(self) -> pd.DataFrame:
         self.data = DataManager.load_csv(self.data_url)
@@ -25,7 +25,7 @@ class Lotofacil(Lottery):
         
         # Rename columns
         column_mapping = {
-            'Data Sorteio': 'data',
+            'Data do Sorteio': 'data',
         }
         df = df.rename(columns=column_mapping)
         
@@ -33,7 +33,7 @@ class Lotofacil(Lottery):
         df['data'] = pd.to_datetime(df['data'], format='%d/%m/%Y')
         
         # Combine balls into a list
-        bola_cols = [f'Bola{i}' for i in range(1, 16)]
+        bola_cols = [f'Bola{i}' for i in range(1, 7)]
         df['dezenas'] = df[bola_cols].values.tolist()
         
         self.data = df

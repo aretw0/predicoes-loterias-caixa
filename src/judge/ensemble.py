@@ -5,9 +5,12 @@ import gc
 from typing import List, Dict, Any
 from collections import Counter
 import tensorflow as tf
-from .base import Lottery
-from .models import RandomForestModel, LSTMModel, MonteCarloModel, XGBoostModel
-from .features import calculate_sum, count_odds, count_evens, calculate_spread
+from core.base import Lottery
+from models.tree.rf import RandomForestModel
+from models.deep.lstm import LSTMModel
+from models.heuristic.monte_carlo import MonteCarloModel
+from models.tree.xgboost import XGBoostModel
+from data.features import calculate_sum, count_odds, count_evens, calculate_spread
 
 class EnsemblePredictor:
     def __init__(self, lottery: Lottery, range_min: int, range_max: int, draw_count: int, model_args: Dict[str, Any] = None, snapshot_paths: Dict[str, str] = None):
@@ -103,7 +106,7 @@ class EnsemblePredictor:
         # 5. CatBoost (New)
         print(" > 5/5: CatBoost...", file=sys.stderr)
         try:
-            from .models.catboost_model import CatBoostModel
+            from models.tree.catboost import CatBoostModel
             cat = CatBoostModel(self.range_min, self.range_max, self.draw_count)
             if 'catboost' in self.snapshot_paths:
                 print(f"   [Snapshot] Loading CatBoost from {self.snapshot_paths['catboost']}...", file=sys.stderr)
@@ -121,9 +124,9 @@ class EnsemblePredictor:
         print(" > 6/6: Running Canaries (Analysis)...", file=sys.stderr)
         canary_preds = {}
         try:
-            from .models.frequency_model import FrequencyModel
-            from .models.gap_model import GapModel
-            from .models.surfing_model import SurfingModel
+            from models.heuristic.frequency import FrequencyModel
+            from models.heuristic.gap import GapModel
+            from models.heuristic.surfing import SurfingModel
 
             # Frequency
             freq = FrequencyModel(self.range_min, self.range_max, self.draw_count)

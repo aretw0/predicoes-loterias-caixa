@@ -2,7 +2,7 @@ import pytest
 import os
 import shutil
 import time
-from src.judge.versioning import SnapshotVersioning
+from ops.versioning import SnapshotVersioning
 
 TEST_DIR = "tests/data/snapshots_test"
 

@@ -1,7 +1,7 @@
 import pytest
-from loterias.megasena import MegaSena
-from loterias.lotofacil import Lotofacil
-from loterias.quina import Quina
+from core.games.megasena import MegaSena
+from core.games.lotofacil import Lotofacil
+from core.games.quina import Quina
 
 def test_megasena_config():
     game = MegaSena()

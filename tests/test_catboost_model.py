@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 import numpy as np
-from loterias.models.catboost_model import CatBoostModel
+from models.tree.catboost import CatBoostModel
 
 @pytest.fixture
 def mock_data():

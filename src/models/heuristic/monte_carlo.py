@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import random
 import statistics
-from ..base import Model
-from ..features import calculate_sum, count_odds, calculate_spread
+from core.base import Model
+from data.features import calculate_sum, count_odds, calculate_spread
 
 class MonteCarloModel(Model):
     def __init__(self, range_min: int, range_max: int, draw_count: int):

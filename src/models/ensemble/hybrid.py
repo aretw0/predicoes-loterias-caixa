@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
-from ..base import Model
-from .frequency_model import FrequencyModel
-from .gap_model import GapModel
-from .surfing_model import SurfingModel
+from core.base import Model
+from models.heuristic.frequency import FrequencyModel
+from models.heuristic.gap import GapModel
+from models.heuristic.surfing import SurfingModel
 
 class HybridModel(Model):
     def __init__(self, range_min: int, range_max: int, draw_count: int):

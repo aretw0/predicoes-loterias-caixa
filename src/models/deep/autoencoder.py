@@ -3,7 +3,7 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Input, Dropout
-from ..base import Model
+from core.base import Model
 import pickle
 import os
 

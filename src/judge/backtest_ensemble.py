@@ -1,9 +1,12 @@
 import pandas as pd
 import sys
-from .base import ModelFactory, Lottery
+from core.base import ModelFactory, Lottery
 from typing import List, Dict, Any
-from .models import RandomForestModel, LSTMModel, MonteCarloModel, XGBoostModel
-from .features import calculate_sum, count_odds, count_evens, calculate_spread
+from models.tree.rf import RandomForestModel
+from models.deep.lstm import LSTMModel
+from models.heuristic.monte_carlo import MonteCarloModel
+from models.tree.xgboost import XGBoostModel
+from data.features import calculate_sum, count_odds, count_evens, calculate_spread
 import tensorflow as tf
 import gc
 
@@ -74,7 +77,7 @@ class EnsembleBacktester:
                  lstm.load(self.snapshot_paths['lstm'])
                  
             # CatBoost Setup
-            from .models.catboost_model import CatBoostModel
+            from models.tree.catboost import CatBoostModel
             cat = CatBoostModel(self.range_min, self.range_max, self.draw_count)
             if 'catboost' in self.snapshot_paths:
                 cat.load(self.snapshot_paths['catboost'])

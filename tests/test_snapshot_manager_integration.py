@@ -3,8 +3,8 @@ import os
 import shutil
 import pandas as pd
 from unittest.mock import MagicMock
-from src.loterias.snapshot_manager import SnapshotManager
-from src.loterias.base import Lottery
+from ops.snapshot import SnapshotManager
+from core.base import Lottery
 
 class MockLottery(Lottery):
     def __init__(self):

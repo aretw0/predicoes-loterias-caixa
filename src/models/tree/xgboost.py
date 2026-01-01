@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import xgboost as xgb
 from sklearn.preprocessing import StandardScaler
-from ..base import Model
-from ..features import calculate_sum, count_odds, count_evens, calculate_spread
+from core.base import Model
+from data.features import calculate_sum, count_odds, count_evens, calculate_spread
 import sys
 
 class XGBoostModel(Model):

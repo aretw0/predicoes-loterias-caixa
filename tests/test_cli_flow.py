@@ -7,7 +7,7 @@ class TestCLIFlow(unittest.TestCase):
     
     def test_preloto_simple(self):
         # Run preloto megasena
-        cmd = [sys.executable, "-m", "src.loterias.cli", "megasena"]
+        cmd = [sys.executable, "-m", "cli.main", "megasena"]
         result = subprocess.run(cmd, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, f"CLI failed: {result.stderr}")
         
@@ -20,7 +20,7 @@ class TestCLIFlow(unittest.TestCase):
     def test_preloto_with_model_args(self):
         # Run preloto megasena --model frequency --model-args order:asc
         cmd = [
-            sys.executable, "-m", "src.loterias.cli", 
+            sys.executable, "-m", "cli.main", 
             "megasena",
             "--model", "frequency",
             "--model-args", "order:asc"

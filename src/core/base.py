@@ -86,7 +86,18 @@ class ModelFactory:
     
     @staticmethod
     def create_model(model_type: str, range_min: int, range_max: int, draw_count: int) -> Model:
-        from .models import RandomModel, FrequencyModel, GapModel, SurfingModel, HybridModel, RandomForestModel, LSTMModel, MonteCarloModel, XGBoostModel, CatBoostModel, TransformerModel, AutoEncoderModel
+        from models.heuristic.random_model import RandomModel
+        from models.heuristic.frequency import FrequencyModel
+        from models.heuristic.gap import GapModel
+        from models.heuristic.surfing import SurfingModel
+        from models.ensemble.hybrid import HybridModel
+        from models.tree.rf import RandomForestModel
+        from models.deep.lstm import LSTMModel
+        from models.heuristic.monte_carlo import MonteCarloModel
+        from models.tree.xgboost import XGBoostModel
+        from models.tree.catboost import CatBoostModel
+        from models.deep.transformer import TransformerModel
+        from models.deep.autoencoder import AutoEncoderModel
         
         if model_type == 'random':
             return RandomModel(range_min, range_max, draw_count)

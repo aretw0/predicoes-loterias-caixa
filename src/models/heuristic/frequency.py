@@ -1,5 +1,5 @@
 import pandas as pd
-from ..base import Model
+from core.base import Model
 
 class FrequencyModel(Model):
     def __init__(self, range_min: int, range_max: int, draw_count: int):
