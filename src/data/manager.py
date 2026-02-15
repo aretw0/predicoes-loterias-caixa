@@ -24,7 +24,9 @@ class DataManager:
         Returns:
             The absolute path to the written file.
         """
-        os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+        dirname = os.path.dirname(path)
+        if dirname:
+            os.makedirs(dirname, exist_ok=True)
         df.to_parquet(path, engine="pyarrow", index=False)
         return os.path.abspath(path)
 
