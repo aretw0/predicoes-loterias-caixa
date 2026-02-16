@@ -110,7 +110,7 @@ community standards and the broader data science ecosystem.
 ### Code Quality
 - [x] Add `ruff` linter configuration in `pyproject.toml`.
 - [x] Standardize `Makefile` targets (`install`, `lint`, `format`, `test`, `clean`).
-- [ ] Enforce linting in CI pipeline.
+- [x] Enforce linting in CI pipeline via `ruff check` on `src/` and `tests/`.
 
 ### Project ↔ loterias-caixa-db Boundary
 - The split between data sourcing (`loterias-caixa-db`) and prediction (`predicoes-loterias-caixa`) is sound.
