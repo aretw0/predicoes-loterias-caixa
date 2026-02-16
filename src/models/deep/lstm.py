@@ -1,8 +1,7 @@
 import numpy as np
 import pandas as pd
-import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Embedding, Input
+from tensorflow.keras.layers import LSTM, Dense, Input
 from core.base import Model
 from data.features import calculate_sum, count_odds, count_evens, calculate_spread
 
@@ -22,8 +21,6 @@ class LSTMModel(Model):
     def _prepare_sequences(self, data: pd.DataFrame):
         ball_cols = [c for c in data.columns if 'bola' in c.lower() or 'dezenas' in c.lower()]
         
-        sequences = []
-        targets = []
         
         draws = data[ball_cols].values.tolist()
         
@@ -53,7 +50,7 @@ class LSTMModel(Model):
                 if 0 <= n <= self.range_max:
                     vec[n] = 1.0
                     valid_numbers.append(n)
-            except:
+            except Exception:
                 pass
         
         if not include_features:
@@ -160,7 +157,8 @@ class LSTMModel(Model):
             
             final_count = kwargs.get('count', self.draw_count)
             # Ensure final_count is int
-            if final_count is None: final_count = self.draw_count
+            if final_count is None:
+                final_count = self.draw_count
             final_count = int(final_count)
 
             top_indices = probs.argsort()[-final_count:][::-1]

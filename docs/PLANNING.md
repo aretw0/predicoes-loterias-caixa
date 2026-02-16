@@ -84,3 +84,35 @@ We use Semantic Versioning (SemVer).
 ## Future Ideas
 
 * **Web Interface**: A static site generating daily predictions.
+
+---
+
+## MLOps & Ecosystem Alignment
+
+Observations from a critical analysis of the project's alignment with
+community standards and the broader data science ecosystem.
+
+### Dependency Hygiene
+- [x] Separate dev/test dependencies from production (`[project.optional-dependencies]`).
+- [x] Pin version ranges for reproducibility (`numpy>=1.24,<2.0`).
+- [x] Add `pyarrow` for Parquet interoperability.
+
+### CI/CD
+- [x] GitHub Actions workflow for linting and testing on push/PR.
+- [ ] Add coverage reporting (e.g., `pytest-cov`).
+- [ ] Publish test results as PR checks.
+
+### Data Interoperability
+- [x] Parquet export support in `DataManager` (community-standard columnar format).
+- [ ] Consider publishing lottery datasets to Kaggle/HuggingFace for community reuse.
+- [ ] Evaluate DVC (Data Version Control) to version large datasets alongside code.
+
+### Code Quality
+- [x] Add `ruff` linter configuration in `pyproject.toml`.
+- [x] Standardize `Makefile` targets (`install`, `lint`, `format`, `test`, `clean`).
+- [x] Enforce linting in CI pipeline via `ruff check` on `src/` and `tests/`.
+
+### Project ↔ loterias-caixa-db Boundary
+- The split between data sourcing (`loterias-caixa-db`) and prediction (`predicoes-loterias-caixa`) is sound.
+- To scale: consume data via Parquet artifacts or a shared data contract (schema file), not raw CSV URLs.
+- Consider publishing a lightweight `loterias-caixa-data` package or using GitHub Releases to distribute versioned Parquet snapshots.

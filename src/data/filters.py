@@ -1,4 +1,4 @@
-from typing import List, Tuple, Optional
+from typing import List, Tuple
 from .features import calculate_sum, count_odds, count_evens
 
 class PredictionFilter:

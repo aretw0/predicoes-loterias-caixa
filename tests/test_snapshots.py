@@ -2,7 +2,6 @@ import unittest
 import os
 import shutil
 import pandas as pd
-import numpy as np
 from models.heuristic.frequency import FrequencyModel
 from models.deep.transformer import TransformerModel
 

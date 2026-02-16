@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from core.base import Model
 from models.heuristic.frequency import FrequencyModel
 from models.heuristic.gap import GapModel

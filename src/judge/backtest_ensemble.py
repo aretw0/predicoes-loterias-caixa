@@ -1,12 +1,10 @@
-import pandas as pd
 import sys
-from core.base import ModelFactory, Lottery
-from typing import List, Dict, Any
+from core.base import Lottery
+from typing import Dict, Any
 from models.tree.rf import RandomForestModel
 from models.deep.lstm import LSTMModel
 from models.heuristic.monte_carlo import MonteCarloModel
 from models.tree.xgboost import XGBoostModel
-from data.features import calculate_sum, count_odds, count_evens, calculate_spread
 import tensorflow as tf
 import gc
 
@@ -62,7 +60,8 @@ class EnsembleBacktester:
             xgb_model = XGBoostModel(self.range_min, self.range_max, self.draw_count)
             xgb_args = self.model_args.copy()
             xgb_args['n_estimators'] = xgb_estimators
-            if 'rf_n_estimators' in xgb_args: del xgb_args['rf_n_estimators']
+            if 'rf_n_estimators' in xgb_args:
+                del xgb_args['rf_n_estimators']
             
             if 'xgb' in self.snapshot_paths:
                  xgb_model.load(self.snapshot_paths['xgb'])
@@ -70,8 +69,10 @@ class EnsembleBacktester:
             # LSTM Setup
             lstm = LSTMModel(self.range_min, self.range_max, self.draw_count)
             lstm_args = self.model_args.copy()
-            if 'epochs' in lstm_args: del lstm_args['epochs']
-            if 'units' in lstm_args: del lstm_args['units']
+            if 'epochs' in lstm_args:
+                del lstm_args['epochs']
+            if 'units' in lstm_args:
+                del lstm_args['units']
             
             if 'lstm' in self.snapshot_paths:
                  lstm.load(self.snapshot_paths['lstm'])

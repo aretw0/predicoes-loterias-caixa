@@ -6,24 +6,40 @@ build-backend = "setuptools.build_meta"
 name = "predicoes-loterias-caixa"
 version = "0.1.0"
 description = "Lottery prediction laboratory"
+readme = "README.md"
+license = {file = "LICENSE.md"}
 authors = [
     {name = "Arthur Silva", email = "arthursilva.dev@gmail.com"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
     "requests",
     "numpy>=1.24,<2.0",
     "pandas>=2.0,<2.3.0",
     "openpyxl",
-    "pytest",
+    "pyarrow>=14.0",
     "scipy>=1.10,<1.15.0",
     "tabulate",
     "scikit-learn",
     "tensorflow[and-cuda]",
     "xgboost",
     "catboost",
-    "lightgbm"
+    "lightgbm",
 ]
 requires-python = ">=3.11"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+]
 
 [project.scripts]
 preloto = "cli.main:main"
@@ -31,6 +47,10 @@ preloto = "cli.main:main"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
 
 [tool.setuptools]
 [tool.setuptools.packages.find]

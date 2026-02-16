@@ -1,4 +1,3 @@
-import pytest
 from core.games.megasena import MegaSena
 from core.games.lotofacil import Lotofacil
 from core.games.quina import Quina

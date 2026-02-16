@@ -10,8 +10,8 @@ TEST_LOG_FILE = "tests/data/test_training_log.csv"
 def logger():
     if os.path.exists(TEST_LOG_FILE):
         os.remove(TEST_LOG_FILE)
-    l = TrainingLogger(filepath=TEST_LOG_FILE)
-    yield l
+    logger = TrainingLogger(filepath=TEST_LOG_FILE)
+    yield logger
     if os.path.exists("tests/data"):
         shutil.rmtree("tests/data")
 

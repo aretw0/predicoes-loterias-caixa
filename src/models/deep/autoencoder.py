@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import tensorflow as tf
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Input, Dropout
 from core.base import Model
@@ -25,7 +24,7 @@ class AutoEncoderModel(Model):
                 n = int(num)
                 if 0 <= n <= self.range_max:
                     vec[n] = 1.0
-            except:
+            except Exception:
                 pass
         return vec
 
@@ -107,7 +106,6 @@ class AutoEncoderModel(Model):
         return float(mse)
 
     def save(self, path: str):
-        import pickle
         keras_path = path + ".keras"
         
         if self.model:
@@ -123,14 +121,12 @@ class AutoEncoderModel(Model):
             self.model = temp_model
 
     def load(self, path: str):
-        import pickle
-        import os
         
         keras_path = path + ".keras"
         # Backward compatibility check (if user points to .keras directly)
         if path.endswith(".keras"):
             keras_path = path
-            pkl_path = path.replace(".keras", "") 
+            path.replace(".keras", "") 
             # This might fail if pickle doesn't exist, we need the wrapper.
             # Assume standar usage via CLI: path without extension or path to save file.
         

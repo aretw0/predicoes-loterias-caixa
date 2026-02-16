@@ -1,7 +1,6 @@
 import pytest
 import os
 import shutil
-import time
 from ops.versioning import SnapshotVersioning
 
 TEST_DIR = "tests/data/snapshots_test"
@@ -27,7 +26,8 @@ def test_generate_filename_manual():
 
 def test_find_latest_snapshot_legacy(snapshot_dir):
     # Create legacy file
-    with open(os.path.join(snapshot_dir, "lstm_v1.keras"), 'w') as f: f.write("legacy")
+    with open(os.path.join(snapshot_dir, "lstm_v1.keras"), 'w') as f:
+        f.write("legacy")
     
     latest = SnapshotVersioning.find_latest_snapshot(snapshot_dir, "lstm", "keras")
     assert latest.endswith("lstm_v1.keras")
@@ -38,11 +38,13 @@ def test_find_latest_snapshot_versioned(snapshot_dir):
     
     # Old
     name1 = "lstm_20240101-1200_abc.keras"
-    with open(os.path.join(snapshot_dir, name1), 'w') as f: f.write("old")
+    with open(os.path.join(snapshot_dir, name1), 'w') as f:
+        f.write("old")
     
     # New
     name2 = "lstm_20250101-1200_def.keras"
-    with open(os.path.join(snapshot_dir, name2), 'w') as f: f.write("new")
+    with open(os.path.join(snapshot_dir, name2), 'w') as f:
+        f.write("new")
     
     latest = SnapshotVersioning.find_latest_snapshot(snapshot_dir, "lstm", "keras")
     assert latest.endswith(name2)

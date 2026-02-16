@@ -1,8 +1,7 @@
 
-import pandas as pd
 import sys
 import gc
-from typing import List, Dict, Any
+from typing import Dict, Any
 from collections import Counter
 import tensorflow as tf
 from core.base import Lottery
@@ -10,7 +9,6 @@ from models.tree.rf import RandomForestModel
 from models.deep.lstm import LSTMModel
 from models.heuristic.monte_carlo import MonteCarloModel
 from models.tree.xgboost import XGBoostModel
-from data.features import calculate_sum, count_odds, count_evens, calculate_spread
 
 class EnsemblePredictor:
     def __init__(self, lottery: Lottery, range_min: int, range_max: int, draw_count: int, model_args: Dict[str, Any] = None, snapshot_paths: Dict[str, str] = None):
@@ -77,7 +75,8 @@ class EnsemblePredictor:
             else:
                 xgb_args = self.model_args.copy()
                 xgb_args['n_estimators'] = xgb_estimators
-                if 'rf_n_estimators' in xgb_args: del xgb_args['rf_n_estimators']
+                if 'rf_n_estimators' in xgb_args:
+                    del xgb_args['rf_n_estimators']
                 xgb_model.train(df, **xgb_args)
                 
             preds['xgb'] = set(xgb_model.predict(count=final_count))
@@ -94,8 +93,10 @@ class EnsemblePredictor:
                 lstm.load(self.snapshot_paths['lstm'])
             else:
                 lstm_args = self.model_args.copy()
-                if 'epochs' in lstm_args: del lstm_args['epochs']
-                if 'units' in lstm_args: del lstm_args['units']
+                if 'epochs' in lstm_args:
+                    del lstm_args['epochs']
+                if 'units' in lstm_args:
+                    del lstm_args['units']
                 lstm.train(df, epochs=lstm_epochs, batch_size=32, verbose=0, units=lstm_units, **lstm_args)
             
             preds['lstm'] = set(lstm.predict(count=final_count))
@@ -210,8 +211,10 @@ class EnsemblePredictor:
 
         # Cleanup
         del lstm, rf, xgb_model, mc
-        try: del cat
-        except: pass
+        try:
+            del cat
+        except Exception:
+            pass
         
         tf.keras.backend.clear_session()
         gc.collect()

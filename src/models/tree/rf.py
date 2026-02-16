@@ -46,7 +46,7 @@ class RandomForestModel(Model):
         y = []
         
         # Pre-calculation structures
-        total_draws = len(data)
+        len(data)
         
         # Efficiently iterating is hard. Let's do a simplified approach.
         # We process draw by draw.
@@ -71,7 +71,7 @@ class RandomForestModel(Model):
                  if 'bola' in col or 'dezenas' in col:
                      try:
                          drawn_numbers.append(int(row[col]))
-                     except:
+                     except Exception:
                          pass
             
             # If we are past warm-up, we record this state as a training example

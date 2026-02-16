@@ -1,6 +1,5 @@
-import pandas as pd
 from core.base import ModelFactory, Lottery
-from typing import List, Dict, Any
+from typing import Dict, Any
 
 class Backtester:
     def __init__(self, lottery: Lottery, model_type: str, model_args: Dict[str, Any], range_min: int, range_max: int, draw_count: int):
@@ -32,7 +31,6 @@ class Backtester:
         
         results = []
         total_cost = 0.0
-        total_prize = 0.0
         hits_distribution = {}
         
         if not silent:
@@ -59,7 +57,7 @@ class Backtester:
             try:
                 model.train(train_data)
                 prediction = model.predict(count=prediction_size, **self.model_args)
-            except Exception as e:
+            except Exception:
                 # If model fails (e.g. not enough data), skip
                 # print(f"Draw {i}: Model error {e}")
                 continue
@@ -78,7 +76,6 @@ class Backtester:
             
             # Approximate Prize (Very rough, just to show mechanics)
             # MegaSena: 4 (Quadra), 5 (Quina), 6 (Sena)
-            prize = 0.0
             # TODO: Implement realistic prize lookup if possible, otherwise just track hits.
             
             results.append({

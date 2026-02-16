@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 import pandas as pd
-import json
-import os
 
 class Lottery(ABC):
     """Abstract base class for a Lottery game."""

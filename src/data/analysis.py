@@ -1,7 +1,7 @@
 import pandas as pd
 import statistics
-from typing import Dict, Any, List
-from .features import calculate_sum, count_odds, count_evens, calculate_spread
+from typing import Dict, Any
+from .features import calculate_sum, count_odds, calculate_spread
 
 class Analyzer:
     def __init__(self, data: pd.DataFrame, range_min: int, range_max: int):
@@ -35,7 +35,7 @@ class Analyzer:
                     val = int(row[col])
                     if str(val) in counts:
                         counts[str(val)] += 1
-                except:
+                except Exception:
                     pass
         
         # Sort by frequency desc
@@ -52,7 +52,7 @@ class Analyzer:
             for col in self.ball_cols:
                 try:
                     draw_numbers.append(int(row[col]))
-                except:
+                except Exception:
                     pass
             
             if not draw_numbers:

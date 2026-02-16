@@ -2,7 +2,6 @@ import unittest
 import os
 import shutil
 import pandas as pd
-from unittest.mock import MagicMock
 from ops.snapshot import SnapshotManager
 from core.base import Lottery
 

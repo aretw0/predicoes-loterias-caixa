@@ -1,4 +1,3 @@
-import pytest
 from data.filters import PredictionFilter
 
 def test_filter_parsing():
