@@ -1,8 +1,7 @@
 import numpy as np
 import pandas as pd
-import tensorflow as tf
-from tensorflow.keras.models import Sequential, Model as KerasModel
-from tensorflow.keras.layers import LSTM, Dense, Embedding, Input, MultiHeadAttention, LayerNormalization, Dropout, GlobalAveragePooling1D
+from tensorflow.keras.models import Model as KerasModel
+from tensorflow.keras.layers import Dense, Input, MultiHeadAttention, LayerNormalization, Dropout, GlobalAveragePooling1D
 from core.base import Model
 from data.features import calculate_sum, count_odds, count_evens, calculate_spread
 
@@ -27,8 +26,6 @@ class TransformerModel(Model):
     def _prepare_sequences(self, data: pd.DataFrame):
         ball_cols = [c for c in data.columns if 'bola' in c.lower() or 'dezenas' in c.lower()]
         
-        sequences = []
-        targets = []
         
         draws = data[ball_cols].values.tolist()
         
@@ -58,15 +55,12 @@ class TransformerModel(Model):
                 if 0 <= n <= self.range_max:
                     vec[n] = 1.0
                     valid_numbers.append(n)
-            except:
+            except Exception:
                 pass
         
         if not include_features:
             return vec
 
-        # Enrich with statistical features
-        # Normalize to 0-1 range roughly to help Neural Net
-        
         # 1. Sum Normalize: Max possible sum approx RangeMax * DrawCount
         max_sum_theoretical = self.range_max * self.draw_count
         s = calculate_sum(valid_numbers) / max_sum_theoretical
@@ -183,7 +177,8 @@ class TransformerModel(Model):
             
             final_count = kwargs.get('count', self.draw_count)
             # Ensure final_count is int
-            if final_count is None: final_count = self.draw_count
+            if final_count is None:
+                final_count = self.draw_count
             final_count = int(final_count)
 
             top_indices = probs.argsort()[-final_count:][::-1]

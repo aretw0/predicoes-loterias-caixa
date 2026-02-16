@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import random
 import statistics
 from core.base import Model
@@ -36,7 +35,7 @@ class MonteCarloModel(Model):
                     sums.append(calculate_sum(draw))
                     odds.append(count_odds(draw))
                     spreads.append(calculate_spread(draw))
-                except:
+                except Exception:
                     continue
         else:
             # Fallback to column scraping
@@ -46,9 +45,10 @@ class MonteCarloModel(Model):
                 try:
                     for c in ball_cols:
                         draw.append(int(row[c]))
-                except:
+                except Exception:
                     continue
-                if not draw: continue
+                if not draw:
+                    continue
                 sums.append(calculate_sum(draw))
                 odds.append(count_odds(draw))
                 spreads.append(calculate_spread(draw))

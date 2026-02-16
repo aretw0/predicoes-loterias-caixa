@@ -1,8 +1,6 @@
 import pandas as pd
-import numpy as np
 from typing import List, Dict, Any
 import os
-from datetime import datetime
 
 class TrainingInspector:
     def __init__(self, log_path: str = "data/training_log.csv"):
@@ -105,7 +103,7 @@ class TrainingInspector:
         else:
              min_val_loss = min(val_losses)
              # Find epoch of min val loss
-             best_epoch_idx = val_losses.index(min_val_loss)
+             val_losses.index(min_val_loss)
              # Map back to real epoch number (since we filtered Nones, careful)
              # Actually let's assume all have it for now or iterate
              # Safer:

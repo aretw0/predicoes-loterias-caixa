@@ -1,6 +1,5 @@
 import random
-import numpy as np
-from typing import List, Dict, Tuple
+from typing import List, Dict
 from judge.backtest_standard import Backtester
 from core.base import Lottery
 
@@ -20,10 +19,13 @@ class GeneticOptimizer:
         self.prize_tiers = self._get_prize_tiers(lottery.slug)
 
     def _get_prize_tiers(self, slug: str) -> List[int]:
-        if slug == 'megasena': return [4, 5, 6]
-        if slug == 'quina': return [2, 3, 4, 5]
-        if slug == 'lotofacil': return [11, 12, 13, 14, 15]
-        return [] # Default: no specific tiers, just max
+        if slug == 'megasena':
+            return [4, 5, 6]
+        if slug == 'quina':
+            return [2, 3, 4, 5]
+        if slug == 'lotofacil':
+            return [11, 12, 13, 14, 15]
+        return []  # Default: no specific tiers, just max
 
     def _create_individual(self) -> List[float]:
         # Gene: [w_gap, w_freq, w_surf]

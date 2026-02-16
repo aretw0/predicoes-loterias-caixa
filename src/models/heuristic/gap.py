@@ -28,7 +28,7 @@ class GapModel(Model):
             if indices:
                 # Use implicit index (assuming data is sorted by date/draw, or at least sequential index)
                 # But safer to use position
-                last_idx = total_draws - 1 # Current (imaginary) draw index
+                total_draws - 1 # Current (imaginary) draw index
                 
                 # Finding the last occurrence in the provided dataframe
                 # Let's rely on position:

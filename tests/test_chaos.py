@@ -1,5 +1,4 @@
 
-import pytest
 from judge.ensemble import EnsemblePredictor
 from core.games.megasena import MegaSena
 

@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 import pandas as pd
-from typing import List, Optional, Callable, Dict, Any
+from typing import List, Callable, Dict, Any
 from core.base import Lottery
 from core.games.megasena import MegaSena
 from models.deep.transformer import TransformerModel

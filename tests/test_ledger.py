@@ -12,8 +12,8 @@ def ledger():
     if os.path.exists(TEST_LEDGER_FILE):
         os.remove(TEST_LEDGER_FILE)
     
-    l = PredictionLedger(filepath=TEST_LEDGER_FILE)
-    yield l
+    ledger = PredictionLedger(filepath=TEST_LEDGER_FILE)
+    yield ledger
     
     # Teardown
     if os.path.exists("tests/data"):

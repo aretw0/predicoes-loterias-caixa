@@ -29,7 +29,7 @@ def test_autoencoder_train_validate(mock_data):
     model.encoding_dim = 4 # Small latent
     
     # Train
-    history = model.train(mock_data, epochs=2, batch_size=4)
+    model.train(mock_data, epochs=2, batch_size=4)
     assert model.model is not None
     
     # Validate a "good" draw (one from training set approx)

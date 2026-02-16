@@ -3,7 +3,7 @@ import glob
 import datetime
 import hashlib
 import json
-from typing import List, Optional, Dict, Any
+from typing import Optional, Dict, Any
 
 class SnapshotVersioning:
     """

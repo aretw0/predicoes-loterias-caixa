@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from datetime import datetime
 import json
-from typing import List, Dict, Any, Union
+from typing import List, Dict, Any
 
 class PredictionLedger:
     def __init__(self, filepath: str = "data/ledger.csv"):

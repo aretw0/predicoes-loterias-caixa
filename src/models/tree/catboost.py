@@ -31,17 +31,20 @@ class CatBoostModel(Model):
         if 'iterations' in kwargs:
             try:
                 params['iterations'] = int(kwargs['iterations'])
-            except ValueError: pass
+            except ValueError:
+                pass
             
         if 'learning_rate' in kwargs:
              try:
                 params['learning_rate'] = float(kwargs['learning_rate'])
-             except ValueError: pass
+             except ValueError:
+                pass
             
         if 'depth' in kwargs:
              try:
                 params['depth'] = int(kwargs['depth'])
-             except ValueError: pass
+             except ValueError:
+                pass
 
         if params:
             self.model.set_params(**params)
@@ -59,13 +62,13 @@ class CatBoostModel(Model):
         last_draw_features = [0, 0, 0, 0] # Sum, Odd, Even, Spread
         
         # Determine number columns
-        num_cols = [col for col in data.columns if 'bola' in col or 'dezenas' in col]
+        [col for col in data.columns if 'bola' in col or 'dezenas' in col]
 
         for i, row in data.iterrows():
             drawn_numbers = []
             try:
                 drawn_set = set(row['dezenas'])
-            except:
+            except Exception:
                 drawn_set = set()
 
             for col in data.columns:
@@ -73,7 +76,7 @@ class CatBoostModel(Model):
                      try:
                          val = int(row[col])
                          drawn_numbers.append(val)
-                     except: 
+                     except Exception:
                          pass
             
             # Fallback: if dezenas column was not usable but we found numbers in columns

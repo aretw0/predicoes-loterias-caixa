@@ -1,12 +1,12 @@
-from .heuristic.random_model import RandomModel
-from .heuristic.frequency import FrequencyModel
-from .heuristic.gap import GapModel
-from .heuristic.surfing import SurfingModel
-from .heuristic.monte_carlo import MonteCarloModel
-from .tree.rf import RandomForestModel
-from .tree.xgboost import XGBoostModel
-from .tree.catboost import CatBoostModel
-from .deep.lstm import LSTMModel
-from .deep.transformer import TransformerModel
-from .deep.autoencoder import AutoEncoderModel
-from .ensemble.hybrid import HybridModel
+from .heuristic.random_model import RandomModel as RandomModel
+from .heuristic.frequency import FrequencyModel as FrequencyModel
+from .heuristic.gap import GapModel as GapModel
+from .heuristic.surfing import SurfingModel as SurfingModel
+from .heuristic.monte_carlo import MonteCarloModel as MonteCarloModel
+from .tree.rf import RandomForestModel as RandomForestModel
+from .tree.xgboost import XGBoostModel as XGBoostModel
+from .tree.catboost import CatBoostModel as CatBoostModel
+from .deep.lstm import LSTMModel as LSTMModel
+from .deep.transformer import TransformerModel as TransformerModel
+from .deep.autoencoder import AutoEncoderModel as AutoEncoderModel
+from .ensemble.hybrid import HybridModel as HybridModel

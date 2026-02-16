@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from datetime import datetime
 import json
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 class TrainingLogger:
     def __init__(self, filepath: str = "data/training_log.csv"):
@@ -55,7 +55,7 @@ class TrainingLogger:
             return pd.DataFrame()
         try:
             df = pd.read_csv(self.filepath)
-        except:
+        except Exception:
             return pd.DataFrame()
             
         if model_type:

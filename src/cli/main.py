@@ -286,7 +286,7 @@ def handle_optimization(args, lottery, game_config):
         print("\n" + "="*40)
         print("OPTIMIZATION COMPLETE")
         print("="*40)
-        print(f"Best Weights Found:")
+        print("Best Weights Found:")
         print(f"  Gap Weight:       {w_gap:.4f}")
         print(f"  Frequency Weight: {w_freq:.4f}")
         print(f"  Surfing Weight:   {w_surf:.4f}")
@@ -419,7 +419,7 @@ def handle_prediction(args, lottery, game_config, model_args, quantity):
         try:
             model_args['seed'] = int(model_args['seed'])
         except ValueError:
-            print(f"Error: seed must be an integer.", file=sys.stderr)
+            print("Error: seed must be an integer.", file=sys.stderr)
             sys.exit(1)
 
     # Generate Prediction (with Rejection Sampling)
@@ -447,8 +447,10 @@ def handle_prediction(args, lottery, game_config, model_args, quantity):
     else:
         # Loop finished without break -> Retries exhausted
         msg = f"Error: Could not generate a prediction satisfying constraints after {max_retries} retries."
-        if args.filters: msg += f" Filters: '{args.filters}'."
-        if validator: msg += f" Anomaly Threshold: {args.anomaly_threshold}."
+        if args.filters:
+            msg += f" Filters: '{args.filters}'."
+        if validator:
+            msg += f" Anomaly Threshold: {args.anomaly_threshold}."
         print(msg, file=sys.stderr)
         sys.exit(1)
     

@@ -30,21 +30,25 @@ class XGBoostModel(Model):
         if 'n_estimators' in kwargs:
             try:
                 self.model.set_params(n_estimators=int(kwargs['n_estimators']))
-            except ValueError: pass
+            except ValueError:
+                pass
             
         if 'learning_rate' in kwargs:
              try:
                 self.model.set_params(learning_rate=float(kwargs['learning_rate']))
-             except ValueError: pass
+             except ValueError:
+                pass
             
              try:
                 self.model.set_params(max_depth=int(kwargs['max_depth']))
-             except ValueError: pass
+             except ValueError:
+                pass
 
         if 'n_jobs' in kwargs:
              try:
                 self.model.set_params(n_jobs=int(kwargs['n_jobs']))
-             except ValueError: pass
+             except ValueError:
+                pass
 
 
         # Feature Engineering (Identical to Random Forest)
@@ -66,7 +70,8 @@ class XGBoostModel(Model):
                  if 'bola' in col or 'dezenas' in col:
                      try:
                          drawn_numbers.append(int(row[col]))
-                     except: pass
+                     except Exception:
+                         pass
             
             if i >= start_training_idx:
                 ctx_sum, ctx_odd, ctx_even, ctx_spread = last_draw_features
